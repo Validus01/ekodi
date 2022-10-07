@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "e-kodi-202ba",
+    "ekodi": "e-kodi-202ba"
+  },
+  "targets": {
+    "e-kodi-202ba": {
+      "hosting": {
+        "ekodi": [
+          "e-kodi-202ba"
+        ]
+      }
+    }
+  }
+}
