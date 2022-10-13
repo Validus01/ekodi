@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:rekodi/chat/chatProvider/chatProvider.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/account.dart';
+import 'package:rekodi/pages/authPage.dart';
 import 'package:rekodi/pages/dashboards/dashboard.dart';
 import 'package:rekodi/pages/home.dart';
 import 'package:rekodi/providers/accountingProvider.dart';
@@ -34,16 +35,22 @@ void main() async {
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider<EKodi>(create: (_) => EKodi(),),
+      ChangeNotifierProvider<EKodi>(
+        create: (_) => EKodi(),
+      ),
       ChangeNotifierProvider<Loader>(create: (_) => Loader()),
-      ChangeNotifierProvider<DatePeriodProvider>(create: (_) => DatePeriodProvider()),
+      ChangeNotifierProvider<DatePeriodProvider>(
+          create: (_) => DatePeriodProvider()),
       ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
       ChangeNotifierProvider<MessageProvider>(create: (_) => MessageProvider()),
-      ChangeNotifierProvider<PropertyProvider>(create: (_) => PropertyProvider()),
+      ChangeNotifierProvider<PropertyProvider>(
+          create: (_) => PropertyProvider()),
       ChangeNotifierProvider<TenantProvider>(create: (_) => TenantProvider()),
-      ChangeNotifierProvider<TransactionProvider>(create: (_) => TransactionProvider()),
+      ChangeNotifierProvider<TransactionProvider>(
+          create: (_) => TransactionProvider()),
       ChangeNotifierProvider<TabProvider>(create: (_) => TabProvider()),
-      ChangeNotifierProvider<AccountingProvider>(create: (_)=> AccountingProvider())
+      ChangeNotifierProvider<AccountingProvider>(
+          create: (_) => AccountingProvider())
     ],
     child: const MyApp(),
   ));
@@ -87,10 +94,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () async {
       auth.authStateChanges().listen((User? user) async {
         if (user == null) {
-          gghf
-          // Route route =
-          //     MaterialPageRoute(builder: (context) => const ());
-          // Navigator.pushReplacement(context, route);
+          Route route =
+              MaterialPageRoute(builder: (context) => const AuthPage());
+          Navigator.pushReplacement(context, route);
         } else {
           final user = FirebaseAuth.instance.currentUser;
 
@@ -104,11 +110,10 @@ class _SplashScreenState extends State<SplashScreen> {
             context.read<EKodi>().switchUser(account);
           });
 
-gfyu
-          // Route route =
-          //     MaterialPageRoute(builder: (context) => const Dashboard());
+          Route route =
+              MaterialPageRoute(builder: (context) => const Dashboard());
 
-          // Navigator.pushReplacement(context, route);
+          Navigator.pushReplacement(context, route);
         }
       });
     });
