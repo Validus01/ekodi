@@ -143,10 +143,10 @@ class _BulkSMSSectionState extends State<BulkSMSSection> {
                     }
                   },
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: controller,
                   hintText: 'Type something...',
-                  width: size.width,
+                  //width: size.width,
                   title: "SMS Details",
                   inputType: TextInputType.multiline,
                 ),

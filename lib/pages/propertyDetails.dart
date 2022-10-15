@@ -7,6 +7,7 @@ import 'package:rekodi/model/property.dart';
 import 'package:rekodi/model/transaction.dart' as account_transaction;
 import 'package:rekodi/providers/propertyProvider.dart';
 import 'package:rekodi/providers/tabProvider.dart';
+import 'package:rekodi/widgets/customButton.dart';
 import 'package:rekodi/widgets/googleMapsWidget.dart';
 import 'package:rekodi/widgets/loadingAnimation.dart';
 import 'package:rekodi/widgets/propertyDetailsCard.dart';
@@ -129,17 +130,17 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    MyTextField(
+                    CustomTextField(
                       controller: description,
                       hintText: "What's the expense for?",
-                      width: size.width,
+                      // width: size.width,
                       title: "Describe Expense",
                       inputType: TextInputType.text,
                     ),
-                    MyTextField(
+                    CustomTextField(
                       controller: paidAmount,
                       hintText: "Amount (Kes)",
-                      width: size.width,
+                      // width: size.width,
                       title: "Amount (Kes)",
                       inputType: TextInputType.number,
                     ),
@@ -246,23 +247,26 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyTextField(
-                              controller: unitName,
-                              hintText: "Name",
-                              width: isDesktop ? size.width*0.2 : size.width*0.6,
-                              title: "Unit Name",
-                            ),
-                            MyTextField(
-                              controller: unitDesc,
-                              hintText: "Description",
-                              width:isDesktop ? size.width*0.2 : size.width*0.6,
-                              title: "Description",
-                            ),
-                          ],
+                        SizedBox(
+                          width: isDesktop ? size.width*0.2 : size.width*0.6,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomTextField(
+                                controller: unitName,
+                                hintText: "Name",
+                                // width: isDesktop ? size.width*0.2 : size.width*0.6,
+                                title: "Unit Name",
+                              ),
+                              CustomTextField(
+                                controller: unitDesc,
+                                hintText: "Description",
+                                // width:isDesktop ? size.width*0.2 : size.width*0.6,
+                                title: "Description",
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(width: 5.0,),
                       ],

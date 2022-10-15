@@ -116,17 +116,17 @@ class _AccountingState extends State<Accounting> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    MyTextField(
+                    CustomTextField(
                       controller: description,
                       hintText: "What's the expense for?",
-                      width: size.width,
+                      // width: size.width,
                       title: "Describe Expense",
                       inputType: TextInputType.text,
                     ),
-                    MyTextField(
+                    CustomTextField(
                       controller: paidAmount,
                       hintText: "Amount (Kes)",
-                      width: size.width,
+                      // width: size.width,
                       title: "Amount (Kes)",
                       inputType: TextInputType.number,
                     ),

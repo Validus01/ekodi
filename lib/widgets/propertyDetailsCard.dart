@@ -64,45 +64,45 @@ class _PropertyDetailsCardState extends State<PropertyDetailsCard> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              MyTextField(
+              CustomTextField(
                 controller: name,
                 hintText: "Name",
-                width: width,
+                // width: width,
                 title: "Property Name",
                 inputType: TextInputType.name,
               ),
-              MyTextField(
+              CustomTextField(
                 controller: address,
                 hintText: "Address",
-                width: width,
+                // width: width,
                 title: "Physical Address",
                 inputType: TextInputType.streetAddress,
               ),
-              MyTextField(
+              CustomTextField(
                 controller: town,
                 hintText: "Town",
-                width: width,
+                // width: width,
                 title: "Town",
                 inputType: TextInputType.text,
               ),
-              MyTextField(
+              CustomTextField(
                 controller: city,
                 hintText: "City",
-                width: width,
+                // width: width,
                 title: "City",
                 inputType: TextInputType.text,
               ),
-              MyTextField(
+              CustomTextField(
                 controller: country,
                 hintText: "Country",
-                width: width,
+                // width: width,
                 title: "Country",
                 inputType: TextInputType.text,
               ),
-              MyTextField(
+              CustomTextField(
                 controller: notes,
                 hintText: "Notes",
-                width: width,
+                // width: width,
                 title: "Notes",
                 inputType: TextInputType.text,
               ),

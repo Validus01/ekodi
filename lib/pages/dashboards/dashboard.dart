@@ -30,6 +30,8 @@ class _DashboardState extends State<Dashboard> {
 
     String? fcmToken = await getMessagingTokens();
 
+    print(fcmToken);
+
     await FirebaseFirestore.instance
         .collection("users")
         .doc(account.userID)

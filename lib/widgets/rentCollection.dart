@@ -418,10 +418,10 @@ class _RentCollectionState extends State<RentCollection> {
                     ),
                   ),
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: amount,
                   hintText: "Amount Paid",
-                  width: size.width,
+                  // width: size.width,
                   title: "Amount Paid",
                   inputType: TextInputType.number,
                 ),
@@ -451,10 +451,10 @@ class _RentCollectionState extends State<RentCollection> {
                       },
                       selectedItem: paymentType),
                 ),
-                paymentType == "Bank" ? MyTextField(
+                paymentType == "Bank" ? CustomTextField(
                   controller: bankName,
                   hintText: "Bank Name",
-                  width: size.width,
+                  //width: size.width,
                   title: "Bank Name",
                   inputType: TextInputType.text,
                 ) : Container(),

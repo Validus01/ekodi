@@ -6,13 +6,13 @@ import 'package:provider/provider.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/property.dart';
 import 'package:rekodi/providers/tabProvider.dart';
-import 'package:rekodi/widgets/customTextField.dart';
 import 'package:rekodi/widgets/loadingAnimation.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:uuid/uuid.dart';
 
 import '../model/account.dart';
 import '../model/unit.dart';
+import '../widgets/customTextField.dart';
 
 
 class AddProperty extends StatefulWidget {
@@ -156,45 +156,51 @@ class _AddPropertyState extends State<AddProperty> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 20.0,),
-                      MyTextField(
+                      CustomTextField(
                         controller: name,
                         hintText: "Name",
-                        width:  size.width,
+                        //width:  size.width,
                         title: "Name of Property",
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          MyTextField(
-                            controller: country,
-                            hintText: "country",
-                            width:isDesktop ? size.width*0.15 : size.width*0.35,
-                            title: "Country",
-                          ),
-                          MyTextField(
-                            controller: city,
-                            hintText: "city",
-                            width:isDesktop ? size.width*0.15 : size.width*0.35,
-                            title: "City",
-                          ),
-                        ],
+                      SizedBox(
+                        width:isDesktop ? size.width*0.15 : size.width*0.35,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomTextField(
+                              controller: country,
+                              hintText: "country",
+                              // width:isDesktop ? size.width*0.15 : size.width*0.35,
+                              title: "Country",
+                            ),
+                            CustomTextField(
+                              controller: city,
+                              hintText: "city",
+                              // width:isDesktop ? size.width*0.15 : size.width*0.35,
+                              title: "City",
+                            ),
+                          ],
+                        ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          MyTextField(
-                            controller: town,
-                            hintText: "Town",
-                            width:isDesktop ? size.width*0.15 : size.width*0.35,
-                            title: "Town",
-                          ),
-                          MyTextField(
-                            controller: address,
-                            hintText: "Physical Address",
-                            width:isDesktop ? size.width*0.15 : size.width*0.35,
-                            title: "Physical Address",
-                          ),
-                        ],
+                      SizedBox(
+                        width:isDesktop ? size.width*0.15 : size.width*0.35,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomTextField(
+                              controller: town,
+                              hintText: "Town",
+                              // width:isDesktop ? size.width*0.15 : size.width*0.35,
+                              title: "Town",
+                            ),
+                            CustomTextField(
+                              controller: address,
+                              hintText: "Physical Address",
+                              // width:isDesktop ? size.width*0.15 : size.width*0.35,
+                              title: "Physical Address",
+                            ),
+                          ],
+                        ),
                       ),
 
                       const Padding(
@@ -230,23 +236,26 @@ class _AddPropertyState extends State<AddProperty> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  MyTextField(
-                                    controller: unitName,
-                                    hintText: "Name",
-                                    width: isDesktop ? size.width*0.2 : size.width*0.6,
-                                    title: "Unit Name",
-                                  ),
-                                  MyTextField(
-                                    controller: unitDesc,
-                                    hintText: "Description",
-                                    width:isDesktop ? size.width*0.2 : size.width*0.6,
-                                    title: "Description",
-                                  ),
-                                ],
+                              SizedBox(
+                                width: isDesktop ? size.width*0.2 : size.width*0.6,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomTextField(
+                                      controller: unitName,
+                                      hintText: "Name",
+                                      // width: isDesktop ? size.width*0.2 : size.width*0.6,
+                                      title: "Unit Name",
+                                    ),
+                                    CustomTextField(
+                                      controller: unitDesc,
+                                      hintText: "Description",
+                                      // width:isDesktop ? size.width*0.2 : size.width*0.6,
+                                      title: "Description",
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(width: 5.0,),
                               TextButton.icon(
@@ -315,10 +324,10 @@ class _AddPropertyState extends State<AddProperty> {
                         ],
                       )
                           : Container(),
-                      MyTextField(
+                      CustomTextField(
                         controller: notes,
                         hintText: "Notes",
-                        width:  size.width,
+                        //width:  size.width,
                         title: "Notes",
                         inputType: TextInputType.multiline,
                       ),

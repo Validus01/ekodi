@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -60,140 +61,140 @@ class CustomDashDrawer extends StatelessWidget {
     );
   }
 
-  Drawer _buildForMobile(BuildContext context, Account account, Size size, String currentTab) {
-    return Drawer(
-      elevation: 0.0,
-      child: ListView(
-        children: [
-          DrawerHeader(
-            padding: EdgeInsets.zero,
-            child: Center(
-              child: displayUserProfile(context, account),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              context.read<TabProvider>().changeTab("Dashboard");
-            },
-            leading: Icon(
-              Icons.dashboard,
-              color:
-              currentTab == "Dashboard" ? EKodi().themeColor : Colors.grey,
-            ),
-            title: Text(
-              "Dashboard",
-              style: TextStyle(
-                color:
-                currentTab == "Dashboard" ?  EKodi().themeColor : Colors.grey,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              context.read<TabProvider>().changeTab("Accounting");
-            },
-            leading: Icon(
-              Icons.paid_outlined,
-              color:
-              currentTab == "Accounting" ?  EKodi().themeColor : Colors.grey,
-            ),
-            title: Text(
-              "Accounting",
-              style: TextStyle(
-                color: currentTab == "Accounting"
-                    ?  EKodi().themeColor : Colors.grey,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              context.read<TabProvider>().changeTab("Reports");
-            },
-            leading: Icon(
-              Icons.receipt_long_outlined,
-              color: currentTab == "Reports" ?  EKodi().themeColor : Colors.grey,
-            ),
-            title: Text(
-              "Reports",
-              style: TextStyle(
-                color:
-                currentTab == "Reports" ?  EKodi().themeColor : Colors.grey,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              context.read<TabProvider>().changeTab("Messages");
-            },
-            leading: Icon(
-              Icons.question_answer_outlined,
-              color: currentTab == "Messages" ?  EKodi().themeColor : Colors.grey,
-            ),
-            title: Text(
-              "Messages",
-              style: TextStyle(
-                color:
-                currentTab == "Messages" ?  EKodi().themeColor : Colors.grey,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              context.read<TabProvider>().changeTab("Tasks");
-            },
-            leading: Icon(
-              Icons.check_box_outlined,
-              color: currentTab == "Tasks" ?  EKodi().themeColor : Colors.grey,
-            ),
-            title: Text(
-              "Tasks",
-              style: TextStyle(
-                color: currentTab == "Tasks" ?  EKodi().themeColor : Colors.grey,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              context.read<TabProvider>().changeTab("Profile");
-            },
-            leading: Icon(
-              Icons.person,
-              color:
-              currentTab == "Account" ?  EKodi().themeColor : Colors.grey,
-            ),
-            title: Text(
-              "Account",
-              style: TextStyle(
-                color:
-                currentTab == "Account" ?  EKodi().themeColor : Colors.grey,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () async {
-              await FirebaseAuth.instance.signOut();
+  // Drawer _buildForMobile(BuildContext context, Account account, Size size, String currentTab) {
+  //   return Drawer(
+  //     elevation: 0.0,
+  //     child: ListView(
+  //       children: [
+  //         DrawerHeader(
+  //           padding: EdgeInsets.zero,
+  //           child: Center(
+  //             child: displayUserProfile(context, account),
+  //           ),
+  //         ),
+  //         ListTile(
+  //           onTap: () {
+  //             context.read<TabProvider>().changeTab("Dashboard");
+  //           },
+  //           leading: Icon(
+  //             Icons.dashboard,
+  //             color:
+  //             currentTab == "Dashboard" ? EKodi().themeColor : Colors.grey,
+  //           ),
+  //           title: Text(
+  //             "Dashboard",
+  //             style: TextStyle(
+  //               color:
+  //               currentTab == "Dashboard" ?  EKodi().themeColor : Colors.grey,
+  //             ),
+  //           ),
+  //         ),
+  //         ListTile(
+  //           onTap: () {
+  //             context.read<TabProvider>().changeTab("Accounting");
+  //           },
+  //           leading: Icon(
+  //             Icons.paid_outlined,
+  //             color:
+  //             currentTab == "Accounting" ?  EKodi().themeColor : Colors.grey,
+  //           ),
+  //           title: Text(
+  //             "Accounting",
+  //             style: TextStyle(
+  //               color: currentTab == "Accounting"
+  //                   ?  EKodi().themeColor : Colors.grey,
+  //             ),
+  //           ),
+  //         ),
+  //         ListTile(
+  //           onTap: () {
+  //             context.read<TabProvider>().changeTab("Reports");
+  //           },
+  //           leading: Icon(
+  //             Icons.receipt_long_outlined,
+  //             color: currentTab == "Reports" ?  EKodi().themeColor : Colors.grey,
+  //           ),
+  //           title: Text(
+  //             "Reports",
+  //             style: TextStyle(
+  //               color:
+  //               currentTab == "Reports" ?  EKodi().themeColor : Colors.grey,
+  //             ),
+  //           ),
+  //         ),
+  //         ListTile(
+  //           onTap: () {
+  //             context.read<TabProvider>().changeTab("Messages");
+  //           },
+  //           leading: Icon(
+  //             Icons.question_answer_outlined,
+  //             color: currentTab == "Messages" ?  EKodi().themeColor : Colors.grey,
+  //           ),
+  //           title: Text(
+  //             "Messages",
+  //             style: TextStyle(
+  //               color:
+  //               currentTab == "Messages" ?  EKodi().themeColor : Colors.grey,
+  //             ),
+  //           ),
+  //         ),
+  //         ListTile(
+  //           onTap: () {
+  //             context.read<TabProvider>().changeTab("Tasks");
+  //           },
+  //           leading: Icon(
+  //             Icons.check_box_outlined,
+  //             color: currentTab == "Tasks" ?  EKodi().themeColor : Colors.grey,
+  //           ),
+  //           title: Text(
+  //             "Tasks",
+  //             style: TextStyle(
+  //               color: currentTab == "Tasks" ?  EKodi().themeColor : Colors.grey,
+  //             ),
+  //           ),
+  //         ),
+  //         ListTile(
+  //           onTap: () {
+  //             context.read<TabProvider>().changeTab("Profile");
+  //           },
+  //           leading: Icon(
+  //             Icons.person,
+  //             color:
+  //             currentTab == "Account" ?  EKodi().themeColor : Colors.grey,
+  //           ),
+  //           title: Text(
+  //             "Account",
+  //             style: TextStyle(
+  //               color:
+  //               currentTab == "Account" ?  EKodi().themeColor : Colors.grey,
+  //             ),
+  //           ),
+  //         ),
+  //         ListTile(
+  //           onTap: () async {
+  //             await FirebaseAuth.instance.signOut();
 
-              Route route = MaterialPageRoute(
-                  builder: (context) => const SplashScreen());
+  //             Route route = MaterialPageRoute(
+  //                 builder: (context) => const SplashScreen());
 
-              Navigator.pushReplacement(context, route);
-            },
-            leading: const Icon(
-              Icons.logout_rounded,
-              color: Colors.grey,
-            ),
-            title: const Text(
-              "Logout",
-              style: TextStyle(
-                color:
-                Colors.grey,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  //             Navigator.pushReplacement(context, route);
+  //           },
+  //           leading: const Icon(
+  //             Icons.logout_rounded,
+  //             color: Colors.grey,
+  //           ),
+  //           title: const Text(
+  //             "Logout",
+  //             style: TextStyle(
+  //               color:
+  //               Colors.grey,
+  //             ),
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Drawer _buildForDesktop(BuildContext context, Account account, Size size, String currentTab) {
     bool isTenant = account.accountType == "Tenant";
@@ -458,7 +459,19 @@ class CustomDashDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                )
+                ),
+                // RaisedButton(
+                //   onPressed: () {
+                //     FirebaseFirestore.instance.collection("mymail").add({
+                //       "to": ['briannamutali586@gmail.com'],
+                //       "message": {
+                //         "subject": 'Hello from Firebase!',
+                //         "text": 'This is the plaintext section of the email body.',
+                //         "html": 'This is the <code>HTML</code> section of the email body.',
+                //       }
+                //     });
+                //   },
+                // )
               ],
             ),
           ),

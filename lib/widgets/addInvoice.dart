@@ -196,38 +196,38 @@ class _AddInvoiceState extends State<AddInvoice> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                MyTextField(
+                CustomTextField(
                   controller: billType,
                   hintText: "e.g Rent, Repair",
-                  width: width,
+                  // width: width,
                   title: "Bill Type",
                   inputType: TextInputType.name,
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: details,
                   hintText: "Description",
-                  width: width,
+                  // width: width,
                   title: "Description",
                   inputType: TextInputType.text,
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: period,
                   hintText: "Period (Days)",
-                  width: width,
+                  // width: width,
                   title: "How long will the payment last",
                   inputType: TextInputType.number,
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: paidAmount,
                   hintText: "Amount",
-                  width: width,
+                  // width: width,
                   title: "Paid Amount",
                   inputType: TextInputType.number,
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: actualAmount,
                   hintText: "Amount",
-                  width: width,
+                  // width: width,
                   title: "Actual Amount",
                   inputType: TextInputType.number,
                 ),

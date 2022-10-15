@@ -136,24 +136,24 @@ class _TenantScreeningReportState extends State<TenantScreeningReport> {
                       ],
                     ),
                     Divider(color: Colors.grey.shade300,),
-                    MyTextField(
+                    CustomTextField(
                       controller: email,
                       hintText: "Email Address",
-                      width: size.width,
+                      // width: size.width,
                       title: "Tenant Email Address",
                       inputType: TextInputType.emailAddress,
                     ),
-                    MyTextField(
+                    CustomTextField(
                       controller: phone,
                       hintText: "Phone (254...)",
-                      width: size.width,
+                      // width: size.width,
                       title: "Tenant Phone Number",
                       inputType: TextInputType.phone,
                     ),
-                    MyTextField(
+                    CustomTextField(
                       controller: description,
                       hintText: "Type something here...",
-                      width: size.width,
+                      // width: size.width,
                       title: "Describe the person",
                       inputType: TextInputType.text,
                     ),

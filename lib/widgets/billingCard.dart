@@ -11,6 +11,7 @@ import 'package:rekodi/model/invoice.dart';
 import 'package:rekodi/model/leaseExpiryModel.dart';
 import 'package:rekodi/model/transaction.dart' as account_transaction;
 import 'package:rekodi/providers/transactionProvider.dart';
+import 'package:rekodi/widgets/customButton.dart';
 import 'package:rekodi/widgets/customTextField.dart';
 import 'package:rekodi/widgets/loadingAnimation.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -24,6 +25,7 @@ import '../dialog/errorDialog.dart';
 import '../model/account.dart';
 import '../model/property.dart';
 import '../model/unit.dart';
+import '../pages/reportPages/IncomeExpenseStatement.dart';
 import '../providers/datePeriod.dart';
 import '../providers/tabProvider.dart';
 import 'defaultLineChart.dart';
@@ -76,6 +78,44 @@ class _BillingCardState extends State<BillingCard> {
           );
         }
     );
+  }
+
+  displayEmergencyDialog() {
+    return showDialog(
+      context: context, 
+      barrierDismissible: false,
+      builder: (c) {
+        return AlertDialog(
+          title: const Text("Emergency"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              //  CustomDropDown(
+              //         items: [],
+              //         selectedItems: [],
+              //         title: "Payment Categories",
+              //         isMultiselect: true,
+              //         onMultiChanged: (v) {
+              //           setState(() {
+              //            // selectedPaymentCategories = v;
+              //           });
+              //         },
+              //         hintText: "Payment Categories",
+              //         labelText: "Payment Categories",
+              //         //itemAsString: (u) => u.toString(),
+              //       ),
+              CustomTextField(
+                          controller: amountController,
+                          hintText: "Amount",
+                          
+                          title: "Rent Amount",
+                          inputType: TextInputType.number,
+                        )
+            ],
+          ),
+        );
+      }
+      );
   }
 
   showPaymentOptions(BuildContext context) {
@@ -137,24 +177,27 @@ class _BillingCardState extends State<BillingCard> {
               return AlertDialog(
                 title: const Text("Set Amount"),
                 content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      MyTextField(
-                        controller: amountController,
-                        hintText: "Amount",
-                        width: isMobile ? size.width*0.8 : size.width*0.4,
-                        title: "Rent Amount",
-                        inputType: TextInputType.number,
-                      ),
-                      MyTextField(
-                        controller: phoneController,
-                        hintText: "2547XXXXXXXX",
-                        width: isMobile ? size.width*0.8 : size.width*0.4,
-                        title: "Phone (2547...)",
-                        inputType: TextInputType.number,
-                      )
-                    ],
+                  child: SizedBox(
+                    width: isMobile ? size.width*0.8 : size.width*0.4,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomTextField(
+                          controller: amountController,
+                          hintText: "Amount",
+                          
+                          title: "Rent Amount",
+                          inputType: TextInputType.number,
+                        ),
+                        CustomTextField(
+                          controller: phoneController,
+                          hintText: "2547XXXXXXXX",
+                          //width: isMobile ? size.width*0.8 : size.width*0.4,
+                          title: "Phone (2547...)",
+                          inputType: TextInputType.number,
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 actions: [
@@ -1296,6 +1339,11 @@ class _BillingCardState extends State<BillingCard> {
                                           ),
                                         ),
                                       ],
+                                    ),
+                                    CustomButton(
+                                      title: "Emergency",
+                                      color: EKodi().themeColor,
+                                      onTap: () => displayEmergencyDialog(),
                                     ),
                                   ],
                                 ) : displayPrompt(account, size, units[0]),

@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -7,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/main.dart';
 import 'package:rekodi/model/account.dart';
@@ -307,31 +304,31 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: ()=>  pickImageFromGallery(),
                         ),
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: name,
                         hintText: "Name",
-                        width: size.width,
+                        // width: size.width,
                         title: "Your Name",
                         inputType: TextInputType.name,
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: email,
                         hintText: "Email",
-                        width: size.width,
+                        // width: size.width,
                         title: "Email Address",
                         inputType: TextInputType.name,
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: phone,
                         hintText: "Phone",
-                        width: size.width,
+                        // width: size.width,
                         title: "Phone Number",
                         inputType: TextInputType.name,
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: idNumber,
                         hintText: "ID Number",
-                        width: size.width,
+                        // width: size.width,
                         title: "ID Number",
                         inputType: TextInputType.number,
                       ),
@@ -520,31 +517,31 @@ class _ProfilePageState extends State<ProfilePage> {
                               onPressed: pickImageFromGallery,
                             ),
                           ),
-                          MyTextField(
+                          CustomTextField(
                             controller: name,
                             hintText: "Name",
-                            width: size.width,
+                            // width: size.width,
                             title: "Your Name",
                             inputType: TextInputType.name,
                           ),
-                          MyTextField(
+                          CustomTextField(
                             controller: email,
                             hintText: "Email",
-                            width: size.width,
+                            // width: size.width,
                             title: "Email Address",
                             inputType: TextInputType.name,
                           ),
-                          MyTextField(
+                          CustomTextField(
                             controller: phone,
                             hintText: "Phone",
-                            width: size.width,
+                            // width: size.width,
                             title: "Phone Number",
                             inputType: TextInputType.name,
                           ),
-                          MyTextField(
+                          CustomTextField(
                             controller: idNumber,
                             hintText: "ID Number",
-                            width: size.width,
+                            // width: size.width,
                             title: "ID Number",
                             inputType: TextInputType.number,
                           ),
@@ -567,7 +564,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   "Landlord",
                                   "Tenant",
                                   "Agent",
-                                  //"Service Provider"
+                                  "Service Provider"
                                 ],
                                 hint: "Continue as...",
                                 onChanged: (v) {

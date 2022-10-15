@@ -59,6 +59,7 @@ class LandlordDash extends StatefulWidget {
 class _LandlordDashState extends State<LandlordDash> {
   _LandlordDashState();
   bool loading = false;
+  final ScrollController _controller = ScrollController();
 
   @override
   void initState() {
@@ -66,6 +67,14 @@ class _LandlordDashState extends State<LandlordDash> {
 
     checkForPaymentMethods();
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+
 
   checkForPaymentMethods() async {
     String userID = Provider.of<EKodi>(context, listen: false).account.userID!;
@@ -454,7 +463,14 @@ class _LandlordDashState extends State<LandlordDash> {
                                     bottom: 0.0,
                                     left: 0.0,
                                     right: 0.0,
-                                    child: SingleChildScrollView(
+                                    child: RawScrollbar(
+                                      controller: _controller,
+                                      isAlwaysShown: true,
+                                      radius: const Radius.circular(5.0),
+                                      thumbColor: Colors.grey,
+                                      thickness: 10,
+                                      child: SingleChildScrollView(
+                                      controller: _controller,
                                       child: Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: size.width * 0.03),
@@ -462,6 +478,7 @@ class _LandlordDashState extends State<LandlordDash> {
                                             properties, occupiedUnits, vacantUnits,
                                             start: startDate, end: endDate),
                                       ),
+                                    ),
                                     ),
                                   )
                                 ],

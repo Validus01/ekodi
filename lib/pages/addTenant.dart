@@ -10,6 +10,7 @@ import 'package:rekodi/model/screeningData.dart';
 import 'package:rekodi/providers/propertyProvider.dart';
 import 'package:rekodi/providers/tabProvider.dart';
 import 'package:rekodi/providers/tenantProvider.dart';
+import 'package:rekodi/widgets/customTextField.dart';
 import 'package:rekodi/widgets/loadingAnimation.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -19,7 +20,6 @@ import '../model/account.dart';
 import '../model/property.dart';
 import '../model/unit.dart';
 import '../widgets/customAppBar.dart';
-import '../widgets/customTextField.dart';
 
 class AddTenant extends StatefulWidget {
 
@@ -385,10 +385,10 @@ class _AddTenantState extends State<AddTenant> {
                           ],
                         ),
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: tenantID,
                         hintText: "ID Number",
-                        width:  size.width,
+                        //width:  size.width,
                         title: "Tenant ID Number",
                       ),
                       Padding(
@@ -429,10 +429,10 @@ class _AddTenantState extends State<AddTenant> {
                             },
                             selectedItem: submitTenantDetails),
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: rent,
                         hintText: "Rent Amount",
-                        width:  size.width,
+                        //width:  size.width,
                         title: "Rent Amount (KES)",
                       ),
                       const Padding(
@@ -463,22 +463,22 @@ class _AddTenantState extends State<AddTenant> {
                             },
                             selectedItem: paymentFreq),
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: deposit,
                         hintText: "Deposit Amount",
-                        width:  size.width,
+                        // width:  size.width,
                         title: "Deposit Amount (KES)",
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: notes,
                         hintText: "Notes",
-                        width:  size.width,
+                        // width:  size.width,
                         title: "Type something here...",
                       ),
-                      MyTextField(
+                      CustomTextField(
                         controller: reminder,
                         hintText: "0 days",
-                        width:  size.width,
+                        // width:  size.width,
                         title: "Tenant Rent Reminder Days Before",
                       ),
                       Padding(
@@ -588,10 +588,10 @@ class _AddTenantState extends State<AddTenant> {
                     ],
                   ),
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: tenantID,
                   hintText: "ID Number",
-                  width:  size.width,
+                  //width:  size.width,
                   title: "Tenant ID Number",
                 ),
                 Padding(
@@ -632,10 +632,10 @@ class _AddTenantState extends State<AddTenant> {
                       },
                       selectedItem: submitTenantDetails),
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: rent,
                   hintText: "Rent Amount",
-                  width:  size.width,
+                  // width:  size.width,
                   title: "Rent Amount (KES)",
                 ),
                 const Padding(
@@ -666,22 +666,22 @@ class _AddTenantState extends State<AddTenant> {
                       },
                       selectedItem: paymentFreq),
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: deposit,
                   hintText: "Deposit Amount",
-                  width:  size.width,
+                  // width:  size.width,
                   title: "Deposit Amount (KES)",
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: notes,
                   hintText: "Notes",
-                  width:  size.width,
+                  // width:  size.width,
                   title: "Type something here...",
                 ),
-                MyTextField(
+                CustomTextField(
                   controller: reminder,
                   hintText: "0 days",
-                  width:  size.width,
+                  // width:  size.width,
                   title: "Tenant Rent Reminder Days Before",
                 ),
                 Padding(

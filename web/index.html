@@ -77,14 +77,14 @@
    pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.worker.min.js";
   </script>
 
-  <script>
+  <!-- <script>
     if ("serviceWorker" in navigator)
     {
       window.addEventListener("load", function () {
         navigator.serviceWorker.register("/firebase-messaging-sw.js");
       });
     }
-  </script>
+  </script> -->
 
   <script>
     var serviceWorkerVersion = null;
@@ -107,6 +107,8 @@
         // Wait for registration to finish before dropping the <script> tag.
         // Otherwise, the browser will load the script multiple times,
         // potentially different versions.
+        navigator.serviceWorker.register("/firebase-messaging-sw.js");
+        
         var serviceWorkerUrl = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
         navigator.serviceWorker.register(serviceWorkerUrl)
           .then((reg) => {

@@ -221,10 +221,10 @@ class _ChatHomeState extends State<ChatHome> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                MyTextField(
+                CustomTextField(
                   controller: controller,
                   hintText: "Email Address",
-                  width: size.width,
+                  //width: size.width,
                   title: "Search By Email",
                   inputType: TextInputType.emailAddress,
                 ),

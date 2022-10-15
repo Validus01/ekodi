@@ -258,7 +258,7 @@ class _AuthPageState extends State<AuthPage> {
                                                   "Landlord",
                                                   "Tenant",
                                                   "Agent",
-                                                  //"Service Provider"
+                                                  "Service Provider"
                                                 ],
                                                 hint: "Continue as...",
                                                 onChanged: (v) {
