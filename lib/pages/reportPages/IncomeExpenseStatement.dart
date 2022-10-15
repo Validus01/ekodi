@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/property.dart';
@@ -8,6 +10,11 @@ import 'package:rekodi/providers/tabProvider.dart';
 import 'package:rekodi/widgets/dateSelector.dart';
 import 'package:rekodi/widgets/loadingAnimation.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import '../../APIs/pdfInvoiceApi.dart';
+import '../../model/account.dart';
+import '../../model/report.dart';
+import '../../model/transaction.dart' as my;
+import '../../providers/datePeriod.dart';
 
 class IncomeExpenseStatement extends StatefulWidget {
   const IncomeExpenseStatement({Key? key}) : super(key: key);
@@ -23,6 +30,7 @@ class _IncomeExpenseStatementState extends State<IncomeExpenseStatement> {
   bool isPayableByTenant = true;
   List<String> paymentCategories = ["Damages", "Deposit", "Rent"];
   List<dynamic> selectedPaymentCategories = [];
+  List<my.Transaction> allTransactions = [];
 
   @override
   void initState() {
@@ -52,10 +60,76 @@ class _IncomeExpenseStatementState extends State<IncomeExpenseStatement> {
     });
   }
 
-  Widget _buildForDesktop(
-    BuildContext context,
-    Size size,
-  ) {
+  void runReport(Account account, int startDate, int endDate) async {
+    setState(() {
+      allTransactions.clear();
+    });
+
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(account.userID)
+        .collection("transactions")
+        .where("timestamp", isGreaterThanOrEqualTo: startDate)
+        .where("timestamp", isLessThanOrEqualTo: endDate)
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((element) {
+        my.Transaction transaction = my.Transaction.fromDocument(element);
+
+        allTransactions.add(transaction);
+      });
+    });
+
+    if (allTransactions.isEmpty) {
+      Fluttertoast.showToast(msg: "There are no transactions in this period ");
+    }
+
+    setState(() {});
+  }
+
+  generateReport(
+    Account account,
+    int startDate,
+    int endDate,
+  ) async {
+    setState(() {
+      loading = true;
+    });
+
+    String period = DateFormat("dd MMM yyyy")
+            .format(DateTime.fromMillisecondsSinceEpoch(startDate)) +
+        " - " +
+        DateFormat("dd MMM yyyy")
+            .format(DateTime.fromMillisecondsSinceEpoch(endDate));
+
+    final String downloadUrl = await PdfInvoiceApi.generaterIncomeExpenseReport(
+        account, "Income Expense \nStatement", period, allTransactions);
+
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    Report report = Report(
+        reportID: timestamp.toString(),
+        name: "Income Expense Statement",
+        url: downloadUrl,
+        timestamp: timestamp,
+        period: period);
+
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(account.userID)
+        .collection("reports")
+        .doc(timestamp.toString())
+        .set(report.toMap())
+        .then((value) =>
+            Fluttertoast.showToast(msg: "Report generated Successfully!"));
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Widget _buildForDesktop(BuildContext context, Size size, Account account,
+      int startDate, int endDate) {
     return loading
         ? const LoadingAnimation()
         : Container(
@@ -176,48 +250,162 @@ class _IncomeExpenseStatementState extends State<IncomeExpenseStatement> {
                   const SizedBox(
                     height: 20.0,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(
-                        height: 1.0,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Container(
-                            height: 30.0,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3.0),
-                                border: Border.all(
-                                    color: Theme.of(context).primaryColor,
-                                    width: 1.0)),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Center(
-                                  child: Text(
-                                "Run Report",
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor),
-                              )),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  reportRunner(account, startDate, endDate),
                 ],
               ),
             ),
           );
   }
 
-  Widget _buildForMobile(
-    BuildContext context,
-    Size size,
-  ) {
+  Widget transactionsList(account, startDate, endDate) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(allTransactions.length, (index) {
+            my.Transaction transaction = allTransactions[index];
+            bool isIncome = transaction.paymentCategory! == "Rent";
+
+            return ListTile(
+              leading: Text(
+                transaction.units![0]["name"],
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              title: Text(
+                transaction.senderInfo!["name"],
+                style: const TextStyle(),
+              ),
+              subtitle: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat("HH: mm, dd MMM").format(
+                        DateTime.fromMillisecondsSinceEpoch(
+                            transaction.timestamp!)),
+                    style: const TextStyle(),
+                  ),
+                  Text(
+                    isIncome ? "Income" : "Expense",
+                    style:
+                        TextStyle(color: isIncome ? Colors.green : Colors.red),
+                  )
+                ],
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        transaction.paidAmount.toString(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const Text(
+                        "Paid",
+                        style: TextStyle(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        transaction.remainingAmount.toString(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const Text(
+                        "Remaining",
+                        style: TextStyle(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+        const SizedBox(
+          height: 20.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(
+              height: 1.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: InkWell(
+                onTap: () => generateReport(account, startDate, endDate),
+                child: Container(
+                  height: 30.0,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3.0),
+                      border: Border.all(color: Colors.green, width: 1.0)),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Center(
+                        child: Text(
+                      "Generate Report",
+                      style: TextStyle(color: Colors.green),
+                    )),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget reportRunner(Account account, int startDate, int endDate) {
+    return allTransactions.isNotEmpty
+        ? transactionsList(account, startDate, endDate)
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox(
+                height: 1.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: InkWell(
+                  onTap: () {
+                    if (selectedProperties.isNotEmpty) {
+                      runReport(account, startDate, endDate);
+                    } else {
+                      Fluttertoast.showToast(msg: "Select a property");
+                    }
+                  },
+                  child: Container(
+                    height: 30.0,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3.0),
+                        border: Border.all(color: Colors.blue, width: 1.0)),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Center(
+                          child: Text(
+                        "Run Report",
+                        style: TextStyle(color: Colors.blue),
+                      )),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+  }
+
+  Widget _buildForMobile(BuildContext context, Size size, Account account,
+      int startDate, int endDate) {
     return loading
         ? const LoadingAnimation()
         : Padding(
@@ -338,35 +526,7 @@ class _IncomeExpenseStatementState extends State<IncomeExpenseStatement> {
                     const SizedBox(
                       height: 20.0,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(
-                          height: 1.0,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: InkWell(
-                            onTap: () {},
-                            child: Container(
-                              height: 30.0,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3.0),
-                                  border: Border.all(
-                                      color: Colors.blue, width: 1.0)),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                                child: Center(
-                                    child: Text(
-                                  "Run Report",
-                                  style: TextStyle(color: Colors.blue),
-                                )),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    reportRunner(account, startDate, endDate),
                   ],
                 ),
               ),
@@ -376,15 +536,18 @@ class _IncomeExpenseStatementState extends State<IncomeExpenseStatement> {
 
   @override
   Widget build(BuildContext context) {
+    Account account = context.watch<EKodi>().account;
     Size size = MediaQuery.of(context).size;
+    int startDate = context.watch<DatePeriodProvider>().startDate;
+    int endDate = context.watch<DatePeriodProvider>().endDate;
 
     return ResponsiveBuilder(
       builder: (context, sizeInfo) {
         bool isMobile = sizeInfo.isMobile || sizeInfo.isTablet;
 
         return isMobile
-            ? _buildForMobile(context, size)
-            : _buildForDesktop(context, size);
+            ? _buildForMobile(context, size, account, startDate, endDate)
+            : _buildForDesktop(context, size, account, startDate, endDate);
       },
     );
   }

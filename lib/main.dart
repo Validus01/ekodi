@@ -110,6 +110,8 @@ class _SplashScreenState extends State<SplashScreen> {
             context.read<EKodi>().switchUser(account);
           });
 
+          print(user.uid);
+
           Route route =
               MaterialPageRoute(builder: (context) => const Dashboard());
 
