@@ -293,7 +293,7 @@ class AuthTextField extends StatelessWidget {
               )
           ),
           prefixIcon: prefixIcon,
-          suffixIconConstraints: BoxConstraints(
+          suffixIconConstraints: const BoxConstraints(
             minWidth: 2,
             minHeight: 2,
           ),

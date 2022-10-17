@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,7 @@ class _AddPropertyState extends State<AddProperty> {
   bool isMultiUnit = false;
   String propertyID = Uuid().v4();
   bool loading = false;
+  List<PlatformFile> imageFiles = [];
 
   @override
   void initState() {
@@ -112,6 +114,51 @@ class _AddPropertyState extends State<AddProperty> {
     }
   }
 
+  pickImages() async {
+    setState(() {
+      loading = true;
+    });
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: true
+    );
+
+    if(result != null)
+    {
+      for (var platformFile in result.files)
+      {
+        imageFiles.add(platformFile);
+      }
+
+      setState(() {
+        loading = false;
+      });
+    }else {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+
+  Widget addImageButton() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(
+          width: 1.0,
+          color: EKodi().themeColor
+        )
+      ),
+      child: TextButton.icon(
+        onPressed: pickImages,
+        icon: const Icon(Icons.add),
+        label: Text("Add Image", style: TextStyle(color: EKodi().themeColor),),
+      ),
+    );
+  } 
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -122,11 +169,7 @@ class _AddPropertyState extends State<AddProperty> {
 
         bool isDesktop = sizeInfo.isDesktop;
 
-        return  loading ? const LoadingAnimation() : Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SizedBox(),
-            Column(
+        return  loading ? const LoadingAnimation() : Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -135,6 +178,31 @@ class _AddPropertyState extends State<AddProperty> {
                 //Container(width: size.width, height: 1.0,color: Colors.black,),
                 const SizedBox(height: 30.0,),
                 Text("Add New Property", textAlign: TextAlign.start, style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 10.0,),
+                imageFiles.isNotEmpty ? SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(imageFiles.length, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Card(
+                          shape: RoundedRectangleBorder(borderRadius:  BorderRadius.circular(10.0)),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: Image.memory(
+                              imageFiles[index].bytes!,
+                              height: 300.0,
+                              width: 400.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ) : Container(),
                 const SizedBox(height: 10.0,),
                 Container(
                   width: isDesktop ? size.width*0.4 : size.width*0.95,
@@ -150,205 +218,216 @@ class _AddPropertyState extends State<AddProperty> {
                       )
                     ],
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 20.0,),
-                      CustomTextField(
-                        controller: name,
-                        hintText: "Name",
-                        //width:  size.width,
-                        title: "Name of Property",
-                      ),
-                      SizedBox(
-                        width:isDesktop ? size.width*0.15 : size.width*0.35,
-                        child: Row(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 20.0,),
+                        addImageButton(),
+                        const SizedBox(height: 20.0,),
+                        CustomTextField(
+                          controller: name,
+                          hintText: "Name",
+                          //width:  size.width,
+                          title: "Name of Property",
+                        ),
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CustomTextField(
-                              controller: country,
-                              hintText: "country",
-                              // width:isDesktop ? size.width*0.15 : size.width*0.35,
-                              title: "Country",
+                            SizedBox(
+                              width:isDesktop ? size.width*0.15 : size.width*0.35,
+                              child: CustomTextField(
+                                controller: country,
+                                hintText: "country",
+                                // width:isDesktop ? size.width*0.15 : size.width*0.35,
+                                title: "Country",
+                              ),
                             ),
-                            CustomTextField(
-                              controller: city,
-                              hintText: "city",
-                              // width:isDesktop ? size.width*0.15 : size.width*0.35,
-                              title: "City",
+                            SizedBox(
+                              width:isDesktop ? size.width*0.15 : size.width*0.35,
+                              child: CustomTextField(
+                                controller: city,
+                                hintText: "city",
+                                // width:isDesktop ? size.width*0.15 : size.width*0.35,
+                                title: "City",
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(
-                        width:isDesktop ? size.width*0.15 : size.width*0.35,
-                        child: Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CustomTextField(
-                              controller: town,
-                              hintText: "Town",
-                              // width:isDesktop ? size.width*0.15 : size.width*0.35,
-                              title: "Town",
+                            SizedBox(
+                              width:isDesktop ? size.width*0.15 : size.width*0.35,
+                              child: CustomTextField(
+                                controller: town,
+                                hintText: "Town",
+                                // width:isDesktop ? size.width*0.15 : size.width*0.35,
+                                title: "Town",
+                              ),
                             ),
-                            CustomTextField(
-                              controller: address,
-                              hintText: "Physical Address",
-                              // width:isDesktop ? size.width*0.15 : size.width*0.35,
-                              title: "Physical Address",
+                            SizedBox(
+                              width:isDesktop ? size.width*0.15 : size.width*0.35,
+                              child: CustomTextField(
+                                controller: address,
+                                hintText: "Physical Address",
+                                // width:isDesktop ? size.width*0.15 : size.width*0.35,
+                                title: "Physical Address",
+                              ),
                             ),
                           ],
                         ),
-                      ),
 
-                      const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text("Is this property a multi-unit?", style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),),
-                          )
-                      ),
-                      const SizedBox(height: 5.0,),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                        child: DropdownSearch<String>(
-                            mode: Mode.MENU,
-                            showSelectedItems: true,
-                            items: const ["Yes", "No"],
-                            hint: "Is this property a multi-unit?",
-                            onChanged: (v) {
-                              setState(() {
-                                isMultiUnit = v == "Yes";
-                              });
-                              print(isMultiUnit);
-                            },
-                            selectedItem: "No"),
-                      ),
-                      isMultiUnit
-                          ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: isDesktop ? size.width*0.2 : size.width*0.6,
-                                child: Column(
+                        const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Is this property a multi-unit?", style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),),
+                            )
+                        ),
+                        const SizedBox(height: 5.0,),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                          child: DropdownSearch<String>(
+                              mode: Mode.MENU,
+                              showSelectedItems: true,
+                              items: const ["Yes", "No"],
+                              hint: "Is this property a multi-unit?",
+                              onChanged: (v) {
+                                setState(() {
+                                  isMultiUnit = v == "Yes";
+                                });
+                                print(isMultiUnit);
+                              },
+                              selectedItem: "No"),
+                        ),
+                        isMultiUnit
+                            ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CustomTextField(
-                                      controller: unitName,
-                                      hintText: "Name",
-                                      // width: isDesktop ? size.width*0.2 : size.width*0.6,
-                                      title: "Unit Name",
+                                    SizedBox(
+                                      width: isDesktop ? size.width*0.2 : size.width*0.6,
+                                      child: CustomTextField(
+                                        controller: unitName,
+                                        hintText: "Name",
+                                        // width: isDesktop ? size.width*0.2 : size.width*0.6,
+                                        title: "Unit Name",
+                                      ),
                                     ),
-                                    CustomTextField(
-                                      controller: unitDesc,
-                                      hintText: "Description",
-                                      // width:isDesktop ? size.width*0.2 : size.width*0.6,
-                                      title: "Description",
+                                    SizedBox(
+                                      width: isDesktop ? size.width*0.2 : size.width*0.6,
+                                      child: CustomTextField(
+                                        controller: unitDesc,
+                                        hintText: "Description",
+                                        // width:isDesktop ? size.width*0.2 : size.width*0.6,
+                                        title: "Description",
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              const SizedBox(width: 5.0,),
-                              TextButton.icon(
-                                label: Text("Add", style: TextStyle(color: EKodi().themeColor),),
-                                icon: Icon(Icons.add, color:  EKodi().themeColor),
-                                onPressed: () async {
-                                  if(unitName.text.isNotEmpty && unitDesc.text.isNotEmpty)
-                                  {
-                                    units.add(Unit(
-                                      name: unitName.text,
-                                      description: unitDesc.text,
-                                      unitID: DateTime.now().millisecondsSinceEpoch,
-                                      tenantInfo: {},
-                                      isOccupied: false,
-                                      rent: 0,
-                                      dueDate: 0,
-                                      propertyID: propertyID,
-                                      deposit: 0,
-                                      startDate: 0,
-                                      paymentFreq: "",
-                                      reminder: 0,
-                                      publisherID: account.userID,
-                                      isAccepted: false,
-                                    ));
+                                const SizedBox(width: 5.0,),
+                                TextButton.icon(
+                                  label: Text("Add", style: TextStyle(color: EKodi().themeColor),),
+                                  icon: Icon(Icons.add, color:  EKodi().themeColor),
+                                  onPressed: () async {
+                                    if(unitName.text.isNotEmpty && unitDesc.text.isNotEmpty)
+                                    {
+                                      units.add(Unit(
+                                        name: unitName.text,
+                                        description: unitDesc.text,
+                                        unitID: DateTime.now().millisecondsSinceEpoch,
+                                        tenantInfo: {},
+                                        isOccupied: false,
+                                        rent: 0,
+                                        dueDate: 0,
+                                        propertyID: propertyID,
+                                        deposit: 0,
+                                        startDate: 0,
+                                        paymentFreq: "",
+                                        reminder: 0,
+                                        publisherID: account.userID,
+                                        isAccepted: false,
+                                      ));
 
-                                    setState(() {
-                                      unitName.clear();
-                                      unitDesc.clear();
-                                    });
-                                  }
-                                  else {
-                                    Fluttertoast.showToast(msg: "Fill in the unit details");
-                                  }
-                                },
-                              )
-                            ],
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(units.length, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                                child: Card(
-                                  elevation: 3.0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0)
-                                  ),
-                                  child: ListTile(
-                                    hoverColor: Colors.grey.shade300,
-                                    title: Text(units[index].name!),
-                                    subtitle: Text(units[index].description!),
-                                    trailing: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          units.remove(units[index]);
-                                        });
-                                      },
-                                      icon: const Icon(Icons.cancel_outlined, color: Colors.red,),
+                                      setState(() {
+                                        unitName.clear();
+                                        unitDesc.clear();
+                                      });
+                                    }
+                                    else {
+                                      Fluttertoast.showToast(msg: "Fill in the unit details");
+                                    }
+                                  },
+                                )
+                              ],
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(units.length, (index) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                  child: Card(
+                                    elevation: 3.0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5.0)
+                                    ),
+                                    child: ListTile(
+                                      hoverColor: Colors.grey.shade300,
+                                      title: Text(units[index].name!),
+                                      subtitle: Text(units[index].description!),
+                                      trailing: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            units.remove(units[index]);
+                                          });
+                                        },
+                                        icon: const Icon(Icons.cancel_outlined, color: Colors.red,),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            }),
-                          )
-                        ],
-                      )
-                          : Container(),
-                      CustomTextField(
-                        controller: notes,
-                        hintText: "Notes",
-                        //width:  size.width,
-                        title: "Notes",
-                        inputType: TextInputType.multiline,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: RaisedButton.icon(
-                            onPressed: savePropertyToDatabase,
-                            icon: const Icon(Icons.done_rounded, color:Colors.white),
-                            label: const Text("Save", style: TextStyle(color:Colors.white),),
-                            color: EKodi().themeColor
+                                );
+                              }),
+                            )
+                          ],
+                        )
+                            : Container(),
+                        CustomTextField(
+                          controller: notes,
+                          hintText: "Notes",
+                          //width:  size.width,
+                          title: "Notes",
+                          inputType: TextInputType.multiline,
                         ),
-                      )
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: RaisedButton.icon(
+                              onPressed: savePropertyToDatabase,
+                              icon: const Icon(Icons.done_rounded, color:Colors.white),
+                              label: const Text("Save", style: TextStyle(color:Colors.white),),
+                              color: EKodi().themeColor
+                          ),
+                        )
+                      ],
 
+                    ),
                   ),
                 ),
               ],
-            ),
-            const SizedBox(),
-          ],
-        );
+            );
       },
     );
   }
