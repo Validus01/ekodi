@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:rekodi/commonFunctions/fileManager.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/property.dart';
 import 'package:rekodi/providers/tabProvider.dart';
@@ -12,6 +13,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:uuid/uuid.dart';
 
 import '../model/account.dart';
+import '../model/propertyImagesModel.dart';
 import '../model/unit.dart';
 import '../widgets/customTextField.dart';
 
@@ -37,6 +39,7 @@ class _AddPropertyState extends State<AddProperty> {
   String propertyID = Uuid().v4();
   bool loading = false;
   List<PlatformFile> imageFiles = [];
+  List<String> imageUrls = [];
 
   @override
   void initState() {
@@ -105,6 +108,14 @@ class _AddPropertyState extends State<AddProperty> {
 
       context.read<TabProvider>().changeTab("Dashboard");
 
+      if(imageFiles.isNotEmpty) {
+        Fluttertoast.showToast(msg: "Uploading Images...");
+
+        await uploadImagesToDatabase(property);
+
+        Fluttertoast.showToast(msg: "Image upload Successful!");
+      }
+
       setState(() {
         loading = false;
       });
@@ -113,6 +124,28 @@ class _AddPropertyState extends State<AddProperty> {
       Fluttertoast.showToast(msg: "Kindly fill the required fields");
     }
   }
+
+  Future<void> uploadImagesToDatabase(Property property) async {
+    for (var imageFile in imageFiles) {
+      String url = await FileManager().uploadPropertyPhoto(property, imageFile);
+
+      imageUrls.add(url);
+    }
+
+    if(imageUrls.isNotEmpty) {
+      PropertyImages propertyImages = PropertyImages(
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+          imageUrls: imageUrls,
+        );
+        
+        //save collection to firestore
+        await FirebaseFirestore.instance.collection("properties")
+            .doc(property.propertyID).collection("images")
+            .doc(propertyImages.timestamp.toString())
+            .set(propertyImages.toMap());
+    }
+  }
+
 
   pickImages() async {
     setState(() {

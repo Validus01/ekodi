@@ -106,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future pickImageFromGallery() async {
 
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
 
     if (result != null) {
       setState(() {
