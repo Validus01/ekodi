@@ -10,6 +10,7 @@ import 'package:rekodi/commonFunctions/fileManager.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/account.dart';
 import 'package:rekodi/pages/dashboards/dashboard.dart';
+import 'package:rekodi/pages/otpScreen.dart';
 import 'package:rekodi/providers/loader.dart';
 import 'package:rekodi/widgets/loadingAnimation.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -60,12 +61,21 @@ class _AuthPageState extends State<AuthPage> {
 
     if(kIsWeb) {
 
-      ConfirmationResult confirmationResult = await auth.signInWithPhoneNumber(phone.text.trim());
+      ConfirmationResult confirmationResult = await auth.signInWithPhoneNumber(phone.text.trim(),  RecaptchaVerifier(
+        container: 'recaptcha',
+        size: RecaptchaVerifierSize.compact,
+        theme: RecaptchaVerifierTheme.light,
+        onSuccess: () => print('reCAPTCHA Completed!'),
+        onError: (FirebaseAuthException error) => print(error),
+        onExpired: () => print('reCAPTCHA Expired!'),
+      ));
 
       // update UI
-      await
+      String smsCode = await Navigator.push(context, MaterialPageRoute(builder: (context)=> OTPScreen(phoneNumber: phone.text.trim(),)));
 
-     //confirmationResult.confirm(verificationCode)
+     UserCredential userCredential = await confirmationResult.confirm(smsCode);
+
+     // get userID AND SAVE TO FIRESTORE
     }
 
     // String res = "";
@@ -283,7 +293,7 @@ class _AuthPageState extends State<AuthPage> {
                                               Icons.phone,
                                               color: Colors.grey,
                                             ),
-                                            hintText: "Phone (+254)",
+                                            hintText: "Phone (+2547...)",
                                             isObscure: false,
                                             inputType: TextInputType.phone,
                                           ),

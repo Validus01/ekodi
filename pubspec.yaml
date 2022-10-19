@@ -71,6 +71,7 @@ dependencies:
   pdf: ^3.8.0
   firebase_messaging: ^11.4.0
   fluro: ^2.0.3
+  responsive_framework: 
   #open_file: ^3.2.1 #remember to remove this
   #path_provider: ^2.0.10
   #mpesa_flutter_plugin: ^1.6.0
