@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
@@ -31,7 +30,6 @@ class _ProfilePageState extends State<ProfilePage> {
   bool updating = false;
   PlatformFile? pickedFile;
 
-
   @override
   void initState() {
     super.initState();
@@ -55,12 +53,12 @@ class _ProfilePageState extends State<ProfilePage> {
       updating = true;
     });
 
-    if(pickedFile != null)
-      {
-        //upload image to storage
-        String downloadUrl = await FileManager().uploadProfilePhoto(account, pickedFile!);
+    if (pickedFile != null) {
+      //upload image to storage
+      String downloadUrl =
+          await FileManager().uploadProfilePhoto(account.userID!, pickedFile!);
 
-        Account newAccount = Account(
+      Account newAccount = Account(
           name: name.text.trim(),
           userID: account.userID,
           photoUrl: downloadUrl,
@@ -68,20 +66,21 @@ class _ProfilePageState extends State<ProfilePage> {
           phone: phone.text.trim(),
           idNumber: idNumber.text.trim(),
           accountType: accountType,
-          deviceTokens: account.deviceTokens
-        );
+          deviceTokens: account.deviceTokens);
 
-        await FirebaseFirestore.instance.collection("users").doc(account.userID).update(newAccount.toMap());
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(account.userID)
+          .update(newAccount.toMap());
 
-        setState(() {
-          updating = false;
-        });
-        
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const SplashScreen()));
-      }
-    else
-      {
-        Account newAccount = Account(
+      setState(() {
+        updating = false;
+      });
+
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const SplashScreen()));
+    } else {
+      Account newAccount = Account(
           name: name.text.trim(),
           userID: account.userID,
           photoUrl: '',
@@ -89,24 +88,25 @@ class _ProfilePageState extends State<ProfilePage> {
           phone: phone.text.trim(),
           idNumber: idNumber.text.trim(),
           accountType: accountType,
-          deviceTokens: account.deviceTokens
-        );
+          deviceTokens: account.deviceTokens);
 
-        await FirebaseFirestore.instance.collection("users").doc(account.userID).update(newAccount.toMap());
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(account.userID)
+          .update(newAccount.toMap());
 
-        setState(() {
-          updating = false;
-        });
+      setState(() {
+        updating = false;
+      });
 
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const SplashScreen()));
-      }
-
-
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const SplashScreen()));
+    }
   }
 
   Future pickImageFromGallery() async {
-
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
 
     if (result != null) {
       setState(() {
@@ -117,7 +117,8 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Widget displayUserProfile(BuildContext context, Account account, bool isMobile) {
+  Widget displayUserProfile(
+      BuildContext context, Account account, bool isMobile) {
     Size size = MediaQuery.of(context).size;
 
     return Container(
@@ -142,17 +143,17 @@ class _ProfilePageState extends State<ProfilePage> {
               borderRadius: BorderRadius.circular(50.0),
               child: account.photoUrl! == ""
                   ? Image.asset(
-                "assets/profile.png",
-                height: 100.0,
-                width: 100.0,
-                fit: BoxFit.cover,
-              )
+                      "assets/profile.png",
+                      height: 100.0,
+                      width: 100.0,
+                      fit: BoxFit.cover,
+                    )
                   : Image.network(
-                account.photoUrl!,
-                height: 100.0,
-                width: 100.0,
-                fit: BoxFit.cover,
-              ),
+                      account.photoUrl!,
+                      height: 100.0,
+                      width: 100.0,
+                      fit: BoxFit.cover,
+                    ),
             ),
             const SizedBox(
               width: 10.0,
@@ -164,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   account.name!,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle( fontSize: 20.0),
+                  style: const TextStyle(fontSize: 20.0),
                 ),
                 Text(
                   account.accountType!,
@@ -182,8 +183,18 @@ class _ProfilePageState extends State<ProfilePage> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18.0),
       child: kIsWeb
-          ? Image.memory(pickedFile!.bytes!, height: 36.0, width: 36.0, fit: BoxFit.cover,)
-          : Image.memory(pickedFile!.bytes!,  height: 36.0, width: 36.0, fit: BoxFit.cover,),
+          ? Image.memory(
+              pickedFile!.bytes!,
+              height: 36.0,
+              width: 36.0,
+              fit: BoxFit.cover,
+            )
+          : Image.memory(
+              pickedFile!.bytes!,
+              height: 36.0,
+              width: 36.0,
+              fit: BoxFit.cover,
+            ),
     );
   }
 
@@ -194,7 +205,9 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 10.0,),
+            const SizedBox(
+              height: 10.0,
+            ),
             displayUserProfile(context, account, true),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -216,21 +229,36 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text("About", style: TextStyle(fontWeight: FontWeight.bold),),
+                      const Text(
+                        "About",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       ListTile(
-                        leading: const Icon(Icons.person, color: Colors.grey,),
+                        leading: const Icon(
+                          Icons.person,
+                          color: Colors.grey,
+                        ),
                         title: Text(account.name!),
                       ),
                       ListTile(
-                        leading: const Icon(Icons.email_outlined, color: Colors.grey,),
+                        leading: const Icon(
+                          Icons.email_outlined,
+                          color: Colors.grey,
+                        ),
                         title: Text(account.email!),
                       ),
                       ListTile(
-                        leading: const Icon(Icons.phone, color: Colors.grey,),
+                        leading: const Icon(
+                          Icons.phone,
+                          color: Colors.grey,
+                        ),
                         title: Text(account.phone!),
                       ),
                       ListTile(
-                        leading: const Icon(Icons.switch_account, color: Colors.grey,),
+                        leading: const Icon(
+                          Icons.switch_account,
+                          color: Colors.grey,
+                        ),
                         title: Text(account.accountType!),
                       )
                     ],
@@ -258,7 +286,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text("Edit Profile", style: TextStyle(fontWeight: FontWeight.bold),),
+                      const Text(
+                        "Edit Profile",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       ListTile(
                         leading: Stack(
                           children: [
@@ -266,28 +297,31 @@ class _ProfilePageState extends State<ProfilePage> {
                               borderRadius: BorderRadius.circular(18.0),
                               child: account.photoUrl! == ""
                                   ? Image.asset(
-                                "assets/profile.png",
-                                height: 36.0,
-                                width: 36.0,
-                              ) : Image.network(
-                                account.photoUrl!,
-                                height: 36.0,
-                                width: 36.0,
-                              ),
+                                      "assets/profile.png",
+                                      height: 36.0,
+                                      width: 36.0,
+                                    )
+                                  : Image.network(
+                                      account.photoUrl!,
+                                      height: 36.0,
+                                      width: 36.0,
+                                    ),
                             ),
                             Positioned(
                               bottom: 0.0,
                               top: 0.0,
                               left: 0.0,
                               right: 0.0,
-                              child: pickedFile != null ? displayPickedFile() : ClipRRect(
-                                borderRadius: BorderRadius.circular(18.0),
-                                child: Image.asset(
-                                  "assets/profile.png",
-                                  height: 36.0,
-                                  width: 36.0,
-                                ),
-                              ),
+                              child: pickedFile != null
+                                  ? displayPickedFile()
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      child: Image.asset(
+                                        "assets/profile.png",
+                                        height: 36.0,
+                                        width: 36.0,
+                                      ),
+                                    ),
                             )
                           ],
                         ),
@@ -295,13 +329,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           elevation: 0.0,
                           hoverColor: Colors.transparent,
                           color: EKodi().themeColor,
-                          icon: const Icon(Icons.cloud_upload_outlined, color: Colors.white,),
-                          label: const Text(
-                              "Upload Photo",
+                          icon: const Icon(
+                            Icons.cloud_upload_outlined,
+                            color: Colors.white,
+                          ),
+                          label: const Text("Upload Photo",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
-                          onPressed: ()=>  pickImageFromGallery(),
+                          onPressed: () => pickImageFromGallery(),
                         ),
                       ),
                       CustomTextField(
@@ -342,8 +378,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0,
-                            vertical: 5.0),
+                            horizontal: 20.0, vertical: 5.0),
                         child: DropdownSearch<String>(
                             mode: Mode.MENU,
                             showSelectedItems: true,
@@ -369,15 +404,19 @@ class _ProfilePageState extends State<ProfilePage> {
                           Icons.check,
                           color: updating ? Colors.white30 : Colors.white,
                         ),
-                        label: Text(
-                            updating ? "Updating..." : "Save",
-                            style: TextStyle(color: updating ? Colors.white30 : Colors.white, fontWeight: FontWeight.bold)),
-                        onPressed: updating ? () {} : () {
-                          if(name.text.isNotEmpty && email.text.isNotEmpty && phone.text.isNotEmpty)
-                          {
-                            updateAccountInfo(account);
-                          }
-                        },
+                        label: Text(updating ? "Updating..." : "Save",
+                            style: TextStyle(
+                                color: updating ? Colors.white30 : Colors.white,
+                                fontWeight: FontWeight.bold)),
+                        onPressed: updating
+                            ? () {}
+                            : () {
+                                if (name.text.isNotEmpty &&
+                                    email.text.isNotEmpty &&
+                                    phone.text.isNotEmpty) {
+                                  updateAccountInfo(account);
+                                }
+                              },
                       ),
                     ],
                   ),
@@ -390,7 +429,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-
   Widget _buildForDesktop(Account account, Size size) {
     return Padding(
       padding: const EdgeInsets.only(right: 15.0),
@@ -400,57 +438,23 @@ class _ProfilePageState extends State<ProfilePage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 10.0,),
-            Text("Profile", style: Theme.of(context).textTheme.headlineSmall,),
-            const SizedBox(height: 10.0,),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              "Profile",
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
             displayUserProfile(context, account, false),
-            const SizedBox(height: 10.0,),
+            const SizedBox(
+              height: 10.0,
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    width: size.width,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3.0),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 1,
-                              spreadRadius: 1.0,
-                              offset: Offset(0.0, 0.0))
-                        ],
-                        ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text("About", style: TextStyle(fontWeight: FontWeight.bold),),
-                          ListTile(
-                            leading: const Icon(Icons.person, color: Colors.grey,),
-                            title: Text(account.name!),
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.email_outlined, color: Colors.grey,),
-                            title: Text(account.email!),
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.phone, color: Colors.grey,),
-                            title: Text(account.phone!),
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.switch_account, color: Colors.grey,),
-                            title: Text(account.accountType!),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10.0,),
                 Expanded(
                   flex: 1,
                   child: Container(
@@ -471,7 +475,70 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text("Edit Profile", style: TextStyle(fontWeight: FontWeight.bold),),
+                          const Text(
+                            "About",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                            ),
+                            title: Text(account.name!),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.email_outlined,
+                              color: Colors.grey,
+                            ),
+                            title: Text(account.email!),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.phone,
+                              color: Colors.grey,
+                            ),
+                            title: Text(account.phone!),
+                          ),
+                          ListTile(
+                            leading: const Icon(
+                              Icons.switch_account,
+                              color: Colors.grey,
+                            ),
+                            title: Text(account.accountType!),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10.0,
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    width: size.width,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3.0),
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 1,
+                            spreadRadius: 1.0,
+                            offset: Offset(0.0, 0.0))
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            "Edit Profile",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           ListTile(
                             leading: Stack(
                               children: [
@@ -479,28 +546,32 @@ class _ProfilePageState extends State<ProfilePage> {
                                   borderRadius: BorderRadius.circular(18.0),
                                   child: account.photoUrl! == ""
                                       ? Image.asset(
-                                    "assets/profile.png",
-                                    height: 36.0,
-                                    width: 36.0,
-                                  ) : Image.network(
-                                    account.photoUrl!,
-                                    height: 36.0,
-                                    width: 36.0,
-                                  ),
+                                          "assets/profile.png",
+                                          height: 36.0,
+                                          width: 36.0,
+                                        )
+                                      : Image.network(
+                                          account.photoUrl!,
+                                          height: 36.0,
+                                          width: 36.0,
+                                        ),
                                 ),
                                 Positioned(
                                   bottom: 0.0,
                                   top: 0.0,
                                   left: 0.0,
                                   right: 0.0,
-                                  child: pickedFile != null ? displayPickedFile() : ClipRRect(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    child: Image.asset(
-                                      "assets/profile.png",
-                                      height: 36.0,
-                                      width: 36.0,
-                                    ),
-                                  ),
+                                  child: pickedFile != null
+                                      ? displayPickedFile()
+                                      : ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(18.0),
+                                          child: Image.asset(
+                                            "assets/profile.png",
+                                            height: 36.0,
+                                            width: 36.0,
+                                          ),
+                                        ),
                                 )
                               ],
                             ),
@@ -508,9 +579,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               elevation: 0.0,
                               hoverColor: Colors.transparent,
                               color: EKodi().themeColor,
-                              icon: const Icon(Icons.cloud_upload_outlined, color: Colors.white,),
-                              label: const Text(
-                                  "Upload Photo",
+                              icon: const Icon(
+                                Icons.cloud_upload_outlined,
+                                color: Colors.white,
+                              ),
+                              label: const Text("Upload Photo",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold)),
@@ -555,8 +628,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                                vertical: 5.0),
+                                horizontal: 20.0, vertical: 5.0),
                             child: DropdownSearch<String>(
                                 mode: Mode.MENU,
                                 showSelectedItems: true,
@@ -582,15 +654,21 @@ class _ProfilePageState extends State<ProfilePage> {
                               Icons.check,
                               color: updating ? Colors.white30 : Colors.white,
                             ),
-                            label: Text(
-                                updating ? "Updating..." : "Save",
-                                style: TextStyle(color: updating ? Colors.white30 : Colors.white, fontWeight: FontWeight.bold)),
-                            onPressed: updating ? () {} : () {
-                              if(name.text.isNotEmpty && email.text.isNotEmpty && phone.text.isNotEmpty)
-                                {
-                                  updateAccountInfo(account);
-                                }
-                            },
+                            label: Text(updating ? "Updating..." : "Save",
+                                style: TextStyle(
+                                    color: updating
+                                        ? Colors.white30
+                                        : Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                            onPressed: updating
+                                ? () {}
+                                : () {
+                                    if (name.text.isNotEmpty &&
+                                        email.text.isNotEmpty &&
+                                        phone.text.isNotEmpty) {
+                                      updateAccountInfo(account);
+                                    }
+                                  },
                           ),
                         ],
                       ),
@@ -599,7 +677,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 50.0,)
+            const SizedBox(
+              height: 50.0,
+            )
           ],
         ),
       ),
@@ -611,11 +691,15 @@ class _ProfilePageState extends State<ProfilePage> {
     Account account = context.watch<EKodi>().account;
     Size size = MediaQuery.of(context).size;
 
-    return updating ? const LoadingAnimation() : ResponsiveBuilder(
-      builder: (context, sizeInfo) {
-        bool isMobile = sizeInfo.isMobile || sizeInfo.isTablet;
-        return isMobile ? _buildForMobile(account, size): _buildForDesktop(account, size);
-      },
-    );
+    return updating
+        ? const LoadingAnimation()
+        : ResponsiveBuilder(
+            builder: (context, sizeInfo) {
+              bool isMobile = sizeInfo.isMobile || sizeInfo.isTablet;
+              return isMobile
+                  ? _buildForMobile(account, size)
+                  : _buildForDesktop(account, size);
+            },
+          );
   }
 }

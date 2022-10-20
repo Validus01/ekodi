@@ -17,6 +17,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../auth/auth.dart';
 import '../dialog/errorDialog.dart';
+import '../routes.dart';
 import '../widgets/customTextField.dart';
 
 class AuthPage extends StatefulWidget {
@@ -38,7 +39,7 @@ class _AuthPageState extends State<AuthPage> {
   bool showPassword = true;
   bool showCPassword = true;
   PlatformFile? pickedFile;
-  FirebaseAuth auth = FirebaseAuth.instance;
+  //FirebaseAuth auth = FirebaseAuth.instance;
 
   double getWidth(Size size, SizingInformation sizeInfo) {
     if (sizeInfo.isMobile) {
@@ -53,29 +54,91 @@ class _AuthPageState extends State<AuthPage> {
   void handleAuth(BuildContext context) async {
     await context.read<Loader>().switchLoadingState(true);
 
-    String url = "";
+    if (kIsWeb) {
+      String res = "";
 
-    // if(pickedFile!= null){
-    //   url = await FileManager().uploadProfilePhoto(account, pickedFile!);
-    // }
+      if (isSignUp) {
+        res = await Authentication().createUserWithPhoneWeb(context,
+            name: name.text.trim(),
+            idNumber: idNumber.text.trim(),
+            email: email.text.trim(),
+            password: password.text.trim(),
+            phone: phone.text.trim(),
+            accountType: accountType,
+            pickedFile: pickedFile);
+      } else {
+        res = await Authentication()
+            .loginUserWithPhoneWeb(context, phone: phone.text.trim());
+      }
 
-    if(kIsWeb) {
+      if (res.split("+").first == "success") {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(res.split("+").last)
+            .get()
+            .then((value) {
+          Account account = Account.fromDocument(value);
 
-      ConfirmationResult confirmationResult = await auth.signInWithPhoneNumber(phone.text.trim(),  RecaptchaVerifier(
-        container: 'recaptcha',
-        size: RecaptchaVerifierSize.compact,
-        theme: RecaptchaVerifierTheme.light,
-        onSuccess: () => print('reCAPTCHA Completed!'),
-        onError: (FirebaseAuthException error) => print(error),
-        onExpired: () => print('reCAPTCHA Expired!'),
-      ));
+          context.read<EKodi>().switchUser(account);
+        });
 
-      // update UI
-      String smsCode = await Navigator.push(context, MaterialPageRoute(builder: (context)=> OTPScreen(phoneNumber: phone.text.trim(),)));
+        CustomRoutes.router.navigateTo(context, "/dashboard");
 
-     UserCredential userCredential = await confirmationResult.confirm(smsCode);
+        await context.read<Loader>().switchLoadingState(false);
+      } else {
+        showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          // false = user must tap button, true = tap outside dialog
+          builder: (BuildContext dialogContext) {
+            return ErrorAlertDialog(
+              message: "Error: $res",
+            );
+          },
+        );
 
-     // get userID AND SAVE TO FIRESTORE
+        await context.read<Loader>().switchLoadingState(false);
+      }
+    } else {
+      // Native platforms Android, iOS
+
+      String res = await Authentication().verifyUserWithPhone(context, isSignUp,
+          name: name.text.trim(),
+          idNumber: idNumber.text.trim(),
+          email: email.text.trim(),
+          password: password.text.trim(),
+          phone: phone.text.trim(),
+          accountType: accountType,
+          pickedFile: pickedFile);
+
+      if (res.split("+").first == "success") {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(res.split("+").last)
+            .get()
+            .then((value) {
+          Account account = Account.fromDocument(value);
+
+          context.read<EKodi>().switchUser(account);
+        });
+
+        CustomRoutes.router.navigateTo(context, "/dashboard");
+
+        await context.read<Loader>().switchLoadingState(false);
+      } else {
+        showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          // false = user must tap button, true = tap outside dialog
+          builder: (BuildContext dialogContext) {
+            return ErrorAlertDialog(
+              message: "Error: $res",
+            );
+          },
+        );
+
+        await context.read<Loader>().switchLoadingState(false);
+      }
     }
 
     // String res = "";
@@ -140,8 +203,8 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Future pickImageFromGallery() async {
-
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
 
     if (result != null) {
       setState(() {
@@ -155,7 +218,12 @@ class _AuthPageState extends State<AuthPage> {
   displayPickedFile() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(50.0),
-      child: Image.memory(pickedFile!.bytes!,  height: 100.0, width: 100.0, fit: BoxFit.cover,),
+      child: Image.memory(
+        pickedFile!.bytes!,
+        height: 100.0,
+        width: 100.0,
+        fit: BoxFit.cover,
+      ),
     );
   }
 
@@ -245,38 +313,54 @@ class _AuthPageState extends State<AuthPage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: isSignUp
                                       ? [
-                                        Stack(
-                                          children: [
-                                             pickedFile != null ? displayPickedFile() : CircleAvatar(
-                                              radius: 50.0,
-                                              backgroundColor: EKodi().themeColor.withOpacity(0.1),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(50.0),
-                                                child: Image.asset(
-                                                  "assets/profile.png",
-                                                  height: 100.0,
-                                                  width: 100.0,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                            ),
-                                            Positioned(
-                                              bottom: 0.0,
-                                              right: 0.0,
-                                              child: Card(
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                                                child: CircleAvatar(
-                                                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                                                  child: IconButton(
-                                                    hoverColor: Colors.transparent,
-                                                    onPressed: () => pickImageFromGallery(),
-                                                    icon: const Icon(Icons.edit, color: Colors.grey,),
+                                          Stack(
+                                            children: [
+                                              pickedFile != null
+                                                  ? displayPickedFile()
+                                                  : CircleAvatar(
+                                                      radius: 50.0,
+                                                      backgroundColor: EKodi()
+                                                          .themeColor
+                                                          .withOpacity(0.1),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(50.0),
+                                                        child: Image.asset(
+                                                          "assets/profile.png",
+                                                          height: 100.0,
+                                                          width: 100.0,
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                      ),
+                                                    ),
+                                              Positioned(
+                                                bottom: 0.0,
+                                                right: 0.0,
+                                                child: Card(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0)),
+                                                  child: CircleAvatar(
+                                                    backgroundColor: Theme.of(
+                                                            context)
+                                                        .scaffoldBackgroundColor,
+                                                    child: IconButton(
+                                                      hoverColor:
+                                                          Colors.transparent,
+                                                      onPressed: () =>
+                                                          pickImageFromGallery(),
+                                                      icon: const Icon(
+                                                        Icons.edit,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                                              )
+                                            ],
+                                          ),
                                           AuthTextField(
                                             controller: name,
                                             prefixIcon: const Icon(
@@ -354,12 +438,19 @@ class _AuthPageState extends State<AuthPage> {
                                               color: Colors.grey,
                                             ),
                                             suffixIcon: IconButton(
-                                              icon: showPassword ? Icon(Icons.visibility) : Icon(Icons.visibility_off_outlined),
-                                              onPressed: showPassword ? () {
-                                                setState(()=> showPassword = false);
-                                              } : () {
-                                                setState(()=> showPassword = true);
-                                              },
+                                              icon: showPassword
+                                                  ? const Icon(Icons.visibility)
+                                                  : const Icon(Icons
+                                                      .visibility_off_outlined),
+                                              onPressed: showPassword
+                                                  ? () {
+                                                      setState(() =>
+                                                          showPassword = false);
+                                                    }
+                                                  : () {
+                                                      setState(() =>
+                                                          showPassword = true);
+                                                    },
                                             ),
                                             hintText: "Password",
                                             isObscure: showPassword,
@@ -377,26 +468,36 @@ class _AuthPageState extends State<AuthPage> {
                                             inputType:
                                                 TextInputType.visiblePassword,
                                             suffixIcon: IconButton(
-                                              icon: showCPassword ? Icon(Icons.visibility) : Icon(Icons.visibility_off_outlined),
-                                              onPressed: showCPassword ? () {
-                                                setState(()=> showCPassword = false);
-                                              } : () {
-                                                setState(()=> showCPassword = true);
-                                              },
+                                              icon: showCPassword
+                                                  ? Icon(Icons.visibility)
+                                                  : Icon(Icons
+                                                      .visibility_off_outlined),
+                                              onPressed: showCPassword
+                                                  ? () {
+                                                      setState(() =>
+                                                          showCPassword =
+                                                              false);
+                                                    }
+                                                  : () {
+                                                      setState(() =>
+                                                          showCPassword = true);
+                                                    },
                                             ),
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: RaisedButton.icon(
                                               onPressed: () {
-                                                if(name.text.isNotEmpty
-                                                    && phone.text.isNotEmpty && idNumber.text.isNotEmpty
-                                                    && email.text.isNotEmpty
-                                                    && password.text.isNotEmpty && password.text.trim() == cPassword.text.trim()
-                                                    && cPassword.text.isNotEmpty)
-                                                  {
-                                                    handleAuth(context);
-                                                  }
+                                                if (name.text.isNotEmpty &&
+                                                    phone.text.isNotEmpty &&
+                                                    idNumber.text.isNotEmpty &&
+                                                    email.text.isNotEmpty &&
+                                                    password.text.isNotEmpty &&
+                                                    password.text.trim() ==
+                                                        cPassword.text.trim() &&
+                                                    cPassword.text.isNotEmpty) {
+                                                  handleAuth(context);
+                                                }
                                               },
                                               color: Theme.of(context)
                                                   .primaryColor,
@@ -449,15 +550,14 @@ class _AuthPageState extends State<AuthPage> {
                                         ]
                                       : [
                                           AuthTextField(
-                                            controller: email,
+                                            controller: phone,
                                             prefixIcon: const Icon(
-                                              Icons.email_outlined,
+                                              Icons.phone,
                                               color: Colors.grey,
                                             ),
-                                            hintText: "Email Address",
+                                            hintText: "Phone (+2547...)",
                                             isObscure: false,
-                                            inputType:
-                                                TextInputType.emailAddress,
+                                            inputType: TextInputType.phone,
                                           ),
                                           AuthTextField(
                                             controller: password,
@@ -470,23 +570,29 @@ class _AuthPageState extends State<AuthPage> {
                                             inputType:
                                                 TextInputType.visiblePassword,
                                             suffixIcon: IconButton(
-                                              icon: showPassword ? Icon(Icons.visibility) : Icon(Icons.visibility_off_outlined),
-                                              onPressed: showPassword ? () {
-                                                setState(()=> showPassword = false);
-                                              } : () {
-                                                setState(()=> showPassword = true);
-                                              },
+                                              icon: showPassword
+                                                  ? const Icon(Icons.visibility)
+                                                  : const Icon(Icons
+                                                      .visibility_off_outlined),
+                                              onPressed: showPassword
+                                                  ? () {
+                                                      setState(() =>
+                                                          showPassword = false);
+                                                    }
+                                                  : () {
+                                                      setState(() =>
+                                                          showPassword = true);
+                                                    },
                                             ),
-
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: RaisedButton.icon(
                                               onPressed: () {
-                                                if(email.text.isNotEmpty && password.text.isNotEmpty)
-                                                  {
-                                                    handleAuth(context);
-                                                  }
+                                                if (phone.text.isNotEmpty &&
+                                                    password.text.isNotEmpty) {
+                                                  handleAuth(context);
+                                                }
                                               },
                                               color: Theme.of(context)
                                                   .primaryColor,
@@ -521,7 +627,7 @@ class _AuthPageState extends State<AuthPage> {
                                                   onPressed: () {
                                                     setState(() {
                                                       isSignUp = true;
-                                                      email.clear();
+                                                      phone.clear();
                                                       password.clear();
                                                     });
                                                   },

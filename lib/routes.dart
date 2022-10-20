@@ -24,13 +24,13 @@ class CustomRoutes {
   });
 
   static void setupRouter() {
-    router.define("/auth",
+    router.define("/authentication",
         handler: authHandler, transitionType: TransitionType.fadeIn);
 
-    router.define("/authenticating",
+    router.define("/",
         handler: splashScreenHandler, transitionType: TransitionType.fadeIn);
 
-    router.define("/users/:id",
+    router.define("/dashboard",
         handler: dashboardUserHandler, transitionType: TransitionType.fadeIn);
   }
 }

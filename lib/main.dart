@@ -24,6 +24,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 // Import the generated file
 import 'firebase_options.dart';
+import 'routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,8 +57,19 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    CustomRoutes.setupRouter();
+  }
 
   // This widget is the root of your application.
   @override
@@ -66,9 +78,10 @@ class MyApp extends StatelessWidget {
       title: 'e-KODI',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.pink,
       ),
-      home: const SplashScreen(),
+      initialRoute: "/",
+      onGenerateRoute: CustomRoutes.router.generator,
     );
   }
 }
@@ -94,9 +107,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () async {
       auth.authStateChanges().listen((User? user) async {
         if (user == null) {
-          Route route =
-              MaterialPageRoute(builder: (context) => const AuthPage());
-          Navigator.pushReplacement(context, route);
+          CustomRoutes.router.navigateTo(context, "/authentication");
         } else {
           final user = FirebaseAuth.instance.currentUser;
 
@@ -110,12 +121,7 @@ class _SplashScreenState extends State<SplashScreen> {
             context.read<EKodi>().switchUser(account);
           });
 
-          print(user.uid);
-
-          Route route =
-              MaterialPageRoute(builder: (context) => const Dashboard());
-
-          Navigator.pushReplacement(context, route);
+          CustomRoutes.router.navigateTo(context, "/dashboard");
         }
       });
     });
