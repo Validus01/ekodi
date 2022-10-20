@@ -454,14 +454,15 @@ class Authentication {
       ConfirmationResult confirmationResult =
           await FirebaseAuth.instance.signInWithPhoneNumber(
               phone!,
-              RecaptchaVerifier(
-                container: 'recaptcha',
-                size: RecaptchaVerifierSize.compact,
-                theme: RecaptchaVerifierTheme.light,
-                // onSuccess: () => print('reCAPTCHA Completed!'),
+              // RecaptchaVerifier(
+              //   container: 'recaptcha',
+              //   size: RecaptchaVerifierSize.compact,
+              //   theme: RecaptchaVerifierTheme.light,
+              //   // onSuccess: () => print('reCAPTCHA Completed!'),
                 // onError: (FirebaseAuthException error) => print(error),
                 // onExpired: () => print('reCAPTCHA Expired!'),
-              ));
+              // )
+              );
 
       // update UI
       String smsCode = await Navigator.push(
@@ -508,14 +509,15 @@ class Authentication {
       ConfirmationResult confirmationResult =
           await FirebaseAuth.instance.signInWithPhoneNumber(
               phone!,
-              RecaptchaVerifier(
-                container: 'recaptcha',
-                size: RecaptchaVerifierSize.compact,
-                theme: RecaptchaVerifierTheme.light,
-                onSuccess: () => print('reCAPTCHA Completed!'),
-                onError: (FirebaseAuthException error) => print(error),
-                onExpired: () => print('reCAPTCHA Expired!'),
-              ));
+              // RecaptchaVerifier(
+              //   container: 'recaptcha',
+              //   size: RecaptchaVerifierSize.compact,
+              //   theme: RecaptchaVerifierTheme.light,
+              //   onSuccess: () => print('reCAPTCHA Completed!'),
+              //   onError: (FirebaseAuthException error) => print(error),
+              //   onExpired: () => print('reCAPTCHA Expired!'),
+              // )
+              );
 
       // update UI
       String smsCode = await Navigator.push(

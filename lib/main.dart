@@ -9,9 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:rekodi/chat/chatProvider/chatProvider.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/account.dart';
-import 'package:rekodi/pages/authPage.dart';
-import 'package:rekodi/pages/dashboards/dashboard.dart';
-import 'package:rekodi/pages/home.dart';
 import 'package:rekodi/providers/accountingProvider.dart';
 import 'package:rekodi/providers/datePeriod.dart';
 import 'package:rekodi/providers/loader.dart';
@@ -75,7 +72,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'e-KODI',
+      title: 'JVALUE',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.pink,
@@ -133,22 +130,13 @@ class _SplashScreenState extends State<SplashScreen> {
       extendBody: true,
       extendBodyBehindAppBar: true,
       body: Center(
-        child: RichText(
-          text: TextSpan(
-            //style: DefaultTextStyle.of(context).style,
-            children: <TextSpan>[
-              TextSpan(
-                  text: 'e-',
-                  style:
-                      GoogleFonts.titanOne(color: Colors.blue, fontSize: 20.0)),
-              TextSpan(
-                  text: 'KODI',
-                  style:
-                      GoogleFonts.titanOne(color: Colors.red, fontSize: 20.0)),
-            ],
-          ),
+        child: Image.asset(
+          "assets/logo.png",
+          height: 300.0,
+          width: 300.0,
+          fit: BoxFit.contain,
         ),
-      ),
-    );
+        ),
+      );
   }
 }

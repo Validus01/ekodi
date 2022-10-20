@@ -8,6 +8,9 @@
       "hosting": {
         "ekodi": [
           "e-kodi-202ba"
+        ],
+        "jvalue": [
+          "jvalue"
         ]
       }
     }

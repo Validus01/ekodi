@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/commonFunctions/fileManager.dart';
@@ -487,7 +488,7 @@ class _AuthPageState extends State<AuthPage> {
                                           Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: RaisedButton.icon(
-                                              onPressed: () {
+                                              onPressed: () async {
                                                 if (name.text.isNotEmpty &&
                                                     phone.text.isNotEmpty &&
                                                     idNumber.text.isNotEmpty &&
@@ -496,7 +497,16 @@ class _AuthPageState extends State<AuthPage> {
                                                     password.text.trim() ==
                                                         cPassword.text.trim() &&
                                                     cPassword.text.isNotEmpty) {
-                                                  handleAuth(context);
+                                                      FirebaseFirestore.instance.collection("users")
+                                                      .where("idNumber", isEqualTo: idNumber.text.isNotEmpty)
+                                                      .get().then((querySnapshot) {
+                                                        if(querySnapshot.docs.isEmpty) {
+                                                          handleAuth(context);
+                                                        } else {
+                                                          Fluttertoast.showToast(msg: "User Already Exists!");
+                                                        }
+                                                      });
+                                                  
                                                 }
                                               },
                                               color: Theme.of(context)
@@ -542,7 +552,7 @@ class _AuthPageState extends State<AuthPage> {
                                                   },
                                                   child: Text("Log In",
                                                       style: GoogleFonts.baloo2(
-                                                          color: Colors.red)),
+                                                          color: Colors.pink)),
                                                 ),
                                               ],
                                             ),
@@ -633,7 +643,7 @@ class _AuthPageState extends State<AuthPage> {
                                                   },
                                                   child: Text("Create Account",
                                                       style: GoogleFonts.baloo2(
-                                                          color: Colors.red)),
+                                                          color: Colors.pink)),
                                                 ),
                                               ],
                                             ),

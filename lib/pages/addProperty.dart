@@ -39,7 +39,10 @@ class _AddPropertyState extends State<AddProperty> {
   String propertyID = Uuid().v4();
   bool loading = false;
   List<PlatformFile> imageFiles = [];
+  List<PlatformFile> videoFiles = [];
   List<String> imageUrls = [];
+  List<String> videoUrls = [];
+  final ScrollController _controller = ScrollController();
 
   @override
   void initState() {
@@ -48,6 +51,14 @@ class _AddPropertyState extends State<AddProperty> {
       country.text = "Kenya";
     });
   }
+
+  
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
 
   savePropertyToDatabase() async {
     if(name.text.isNotEmpty && country.text.isNotEmpty && city.text.isNotEmpty
@@ -174,6 +185,35 @@ class _AddPropertyState extends State<AddProperty> {
     }
   }
 
+  
+  pickVideos() async {
+    setState(() {
+      loading = true;
+    });
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+      allowMultiple: true
+    );
+
+    if(result != null)
+    {
+      for (var platformFile in result.files)
+      {
+        videoFiles.add(platformFile);
+      }
+
+      setState(() {
+        loading = false;
+      });
+    }else {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+
 
   Widget addImageButton() {
     return Container(
@@ -185,12 +225,68 @@ class _AddPropertyState extends State<AddProperty> {
         )
       ),
       child: TextButton.icon(
-        onPressed: pickImages,
-        icon: const Icon(Icons.add),
+        onPressed: pickVideos,
+        icon: const Icon(Icons.image_outlined),
         label: Text("Add Image", style: TextStyle(color: EKodi().themeColor),),
       ),
     );
   } 
+
+  
+  Widget addVideoButton() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(
+          width: 1.0,
+          color: EKodi().themeColor
+        )
+      ),
+      child: TextButton.icon(
+        onPressed: pickImages,
+        icon: const Icon(Icons.videocam_outlined),
+        label: Text("Add Video", style: TextStyle(color: EKodi().themeColor),),
+      ),
+    );
+  } 
+
+
+  Widget displayImages() {
+    return imageFiles.isNotEmpty ? RawScrollbar(
+                  controller: _controller,
+                  isAlwaysShown: true,
+                  radius: const Radius.circular(5.0),
+                  thumbColor: Colors.grey,
+                  scrollbarOrientation: ScrollbarOrientation.bottom,
+                  thickness: 10,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    controller: _controller,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(imageFiles.length, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Card(
+                            shape: RoundedRectangleBorder(borderRadius:  BorderRadius.circular(10.0)),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.memory(
+                                imageFiles[index].bytes!,
+                                height: 220.0,
+                                width: 300.0,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ) : Container();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -212,44 +308,21 @@ class _AddPropertyState extends State<AddProperty> {
                 const SizedBox(height: 30.0,),
                 Text("Add New Property", textAlign: TextAlign.start, style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 10.0,),
-                imageFiles.isNotEmpty ? SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(imageFiles.length, (index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Card(
-                          shape: RoundedRectangleBorder(borderRadius:  BorderRadius.circular(10.0)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Image.memory(
-                              imageFiles[index].bytes!,
-                              height: 300.0,
-                              width: 400.0,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ) : Container(),
+                displayImages(),
                 const SizedBox(height: 10.0,),
                 Container(
                   width: isDesktop ? size.width*0.4 : size.width*0.95,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 2.0,
-                          spreadRadius: 2.0,
-                          offset: Offset(0.0, 0.0)
-                      )
-                    ],
+                    // boxShadow: const [
+                    //   BoxShadow(
+                    //       color: Colors.black12,
+                    //       blurRadius: 2.0,
+                    //       spreadRadius: 2.0,
+                    //       offset: Offset(0.0, 0.0)
+                    //   )
+                    // ],
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -259,7 +332,15 @@ class _AddPropertyState extends State<AddProperty> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const SizedBox(height: 20.0,),
-                        addImageButton(),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            addImageButton(),
+                            const SizedBox(width: 10.0,),
+                            addVideoButton()
+                          ],
+                        ),
                         const SizedBox(height: 20.0,),
                         CustomTextField(
                           controller: name,
