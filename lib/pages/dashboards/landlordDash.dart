@@ -43,7 +43,6 @@ import '../reportPages/taskReport.dart';
 import '../reportPages/tenantScreeningReport.dart';
 import '../reportsPage.dart';
 
-
 class LandlordDash extends StatefulWidget {
   const LandlordDash({Key? key}) : super(key: key);
 
@@ -69,75 +68,89 @@ class _LandlordDashState extends State<LandlordDash> {
     super.dispose();
   }
 
-
-
   checkForPaymentMethods() async {
     String userID = Provider.of<EKodi>(context, listen: false).account.userID!;
 
     await FirebaseFirestore.instance
         .collection("users")
         .doc(userID)
-        .collection("paymentInfo").get().then((value) {
-          if(value.docs.isEmpty)
-            {
-              Timer(const Duration(seconds: 7), () async {
-
-                promptPaymentMethod();
-              });
-            }
+        .collection("paymentInfo")
+        .get()
+        .then((value) {
+      if (value.docs.isEmpty) {
+        Timer(const Duration(seconds: 7), () async {
+          promptPaymentMethod();
+        });
+      }
     });
   }
 
   promptPaymentMethod() {
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (c) {
-        return AlertDialog(
-          title: const Text("Setup Payment Method"),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  onTap: () {},
-                  leading: Image.asset("assets/mpesa.png", height: 50.0, width: 50.0, fit: BoxFit.contain,),
-                  title: const Text("M-Pesa"),
-                  subtitle: const Text("Setup your Paybill or Buy Goods"),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: Image.asset("assets/visa.png", height: 50.0, width: 50.0, fit: BoxFit.contain,),
-                  title: const Text("Bank"),
-                  subtitle: const Text("Setup your bank details"),
-                ),
-              ],
+        context: context,
+        barrierDismissible: false,
+        builder: (c) {
+          return AlertDialog(
+            title: const Text("Setup Payment Method"),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    onTap: () {},
+                    leading: Image.asset(
+                      "assets/mpesa.png",
+                      height: 50.0,
+                      width: 50.0,
+                      fit: BoxFit.contain,
+                    ),
+                    title: const Text("M-Pesa"),
+                    subtitle: const Text("Setup your Paybill or Buy Goods"),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: Image.asset(
+                      "assets/visa.png",
+                      height: 50.0,
+                      width: 50.0,
+                      fit: BoxFit.contain,
+                    ),
+                    title: const Text("Bank"),
+                    subtitle: const Text("Setup your bank details"),
+                  ),
+                ],
+              ),
             ),
-          ),
-          actions: [
-            RaisedButton(
-              color: EKodi().themeColor,
-              onPressed: () {Navigator.pop(context);},
-              child: const Text("Close", style: TextStyle(color: Colors.white),),
-            )
-          ],
-        );
-      }
-    );
+            actions: [
+              RaisedButton(
+                color: EKodi().themeColor,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Close",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ],
+          );
+        });
   }
-
-
 
   addNewProperty() async {
-
     context.read<TabProvider>().changeTab("AddProperty");
-
   }
 
-
-  displayTab(Account account, String currentTab, Size size, SizingInformation sizeInfo,
-      List<Property> properties, int occupiedUnits, int vacantUnits, {int? start, int? end}) {
-
+  displayTab(
+      Account account,
+      String currentTab,
+      Size size,
+      SizingInformation sizeInfo,
+      List<Property> properties,
+      int occupiedUnits,
+      int vacantUnits,
+      {int? start,
+      int? end}) {
     switch (currentTab) {
       case "Dashboard":
         return Column(
@@ -147,25 +160,19 @@ class _LandlordDashState extends State<LandlordDash> {
               width: size.width,
               height: 60.0,
               child: Row(
-                mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         currentTab,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .apply(
-                            color: Colors.black,
-                            //fontWeightDelta: 10,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium!.apply(
+                              color: Colors.black,
+                              //fontWeightDelta: 10,
+                            ),
                       ),
                       Text(
                         "Hi ${account.name!}, Welcome to e-Ekodi",
@@ -176,20 +183,24 @@ class _LandlordDashState extends State<LandlordDash> {
                       )
                     ],
                   ),
-                  currentTab == "Accounting" ? RaisedButton.icon(
-                    hoverColor: Colors.transparent,
-                    label: const Text(
-                      "Invoices",
-                      style: TextStyle(color: Colors.deepPurple),
-                    ),
-                    color: Colors.deepPurple.shade100,
-                    elevation: 0.0,
-                    onPressed: ()=> context.read<AccountingProvider>().changeToInvoicing(true),
-                    icon: const Icon(
-                      Icons.receipt_long_rounded,
-                      color: Colors.deepPurple,
-                    ),
-                  ) : Container(),
+                  currentTab == "Accounting"
+                      ? RaisedButton.icon(
+                          hoverColor: Colors.transparent,
+                          label: const Text(
+                            "Invoices",
+                            style: TextStyle(color: Colors.deepPurple),
+                          ),
+                          color: Colors.deepPurple.shade100,
+                          elevation: 0.0,
+                          onPressed: () => context
+                              .read<AccountingProvider>()
+                              .changeToInvoicing(true),
+                          icon: const Icon(
+                            Icons.receipt_long_rounded,
+                            color: Colors.deepPurple,
+                          ),
+                        )
+                      : Container(),
                   const DateSelector(),
                 ],
               ),
@@ -203,8 +214,8 @@ class _LandlordDashState extends State<LandlordDash> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Padding(
-                        padding:
-                        const EdgeInsets.only(top: 10.0, right: 15.0, bottom: 5.0),
+                        padding: const EdgeInsets.only(
+                            top: 10.0, right: 15.0, bottom: 5.0),
                         child: Container(
                           width: size.width,
                           decoration: BoxDecoration(
@@ -214,12 +225,12 @@ class _LandlordDashState extends State<LandlordDash> {
                                   : Colors.transparent,
                               boxShadow: properties.isNotEmpty
                                   ? [
-                                const BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 1,
-                                    spreadRadius: 1.0,
-                                    offset: Offset(0.0, 0.0))
-                              ]
+                                      const BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 1,
+                                          spreadRadius: 1.0,
+                                          offset: Offset(0.0, 0.0))
+                                    ]
                                   : [],
                               border: Border.all(
                                 color: Colors.grey.shade300,
@@ -228,31 +239,55 @@ class _LandlordDashState extends State<LandlordDash> {
                           child: properties.isNotEmpty
                               ? const RevenueOverview()
                               : Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 30.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  RaisedButton.icon(
-                                    hoverColor: Colors.transparent,
-                                    label: const Text(
-                                      "New Property",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    color: EKodi().themeColor,
-                                    elevation: 0.0,
-                                    onPressed: addNewProperty,
-                                    icon: const Icon(
-                                      Icons.add,
-                                      color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 30.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                            "assets/vector/apartment.png",
+                                            height: 100.0,
+                                            width: 100.0,
+                                            fit: BoxFit.contain),
+                                        // RaisedButton(
+                                        //   onPressed: () {
+                                        //     FirebaseFirestore.instance
+                                        //         .collection("users")
+                                        //         .get()
+                                        //         .then((querySnapshot) {
+                                        //       querySnapshot.docs
+                                        //           .forEach((element) {
+                                        //         element.reference.set({
+                                        //           "verified": false,
+                                        //         }, SetOptions(merge: true));
+                                        //       });
+                                        //     });
+                                        //   },
+                                        // ),
+                                        RaisedButton.icon(
+                                          hoverColor: Colors.transparent,
+                                          label: const Text(
+                                            "New Property",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          color: EKodi().themeColor,
+                                          elevation: 0.0,
+                                          onPressed: addNewProperty,
+                                          icon: const Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
+                                ),
                         ),
                       ),
                       Padding(
@@ -278,17 +313,18 @@ class _LandlordDashState extends State<LandlordDash> {
                   flex: 3,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment:
-                    MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       PropertiesCard(
                           properties: properties,
                           vacantUnits: vacantUnits,
                           occupiedUnits: occupiedUnits,
-                          onPressed: () => context.read<TabProvider>().changeTab("Properties")
-                        // displayProperties(
-                        //     account),
-                      ),
+                          onPressed: () => context
+                              .read<TabProvider>()
+                              .changeTab("Properties")
+                          // displayProperties(
+                          //     account),
+                          ),
                       const InvoicesCard(),
                       const OutstandingCard()
                     ],
@@ -315,9 +351,13 @@ class _LandlordDashState extends State<LandlordDash> {
             mainAxisSize: MainAxisSize.min,
             children: const [
               ChatBuilder(),
-              SizedBox(height: 15.0,),
+              SizedBox(
+                height: 15.0,
+              ),
               BulkSMSSection(),
-              SizedBox(height: 30.0,),
+              SizedBox(
+                height: 30.0,
+              ),
             ],
           ),
         );
@@ -336,7 +376,9 @@ class _LandlordDashState extends State<LandlordDash> {
       case "PropertyImages":
         return const PropertyImagesPage();
       case "Invoice":
-        return InvoicePage(properties: properties,);
+        return InvoicePage(
+          properties: properties,
+        );
       case "AddProperty":
         return const AddProperty();
       case "IncomeExpenseStatement":
@@ -367,7 +409,6 @@ class _LandlordDashState extends State<LandlordDash> {
 
     return ResponsiveBuilder(
       builder: (context, sizeInfo) {
-
         return StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('properties')
@@ -375,117 +416,123 @@ class _LandlordDashState extends State<LandlordDash> {
               .orderBy("timestamp", descending: true)
               .snapshots(),
           builder: (context, snapshot) {
-            if(!snapshot.hasData)
-              {
-                return const LoadingAnimation();
+            if (!snapshot.hasData) {
+              return const LoadingAnimation();
+            } else {
+              List<Property> properties = [];
+              int vacantUnits = 0;
+              int occupiedUnits = 0;
+
+              for (var element in snapshot.data!.docs) {
+                Property property = Property.fromDocument(element);
+
+                properties.add(property);
+
+                vacantUnits = vacantUnits + property.vacant!.toInt();
+
+                occupiedUnits = occupiedUnits + property.occupied!.toInt();
               }
-            else
-              {
-                List<Property> properties = [];
-                int vacantUnits = 0;
-                int occupiedUnits = 0;
 
-                for (var element in snapshot.data!.docs) {
-                  Property property = Property.fromDocument(element);
+              //TODO: AutoGenerate().autoGenerateInvoice(account, properties);
 
-                  properties.add(property);
-
-                  vacantUnits = vacantUnits + property.vacant!.toInt();
-
-                  occupiedUnits = occupiedUnits + property.occupied!.toInt();
-                }
-
-                //TODO: AutoGenerate().autoGenerateInvoice(account, properties);
-
-
-                return Scaffold(
-                  backgroundColor: Colors.grey.shade50,
-                  body: loading
-                      ? const LoadingAnimation()
-                      : Row(
-                    children: [
-                      const Expanded(
-                        flex: 2,
-                        child: CustomDashDrawer(),
-                      ),
-                      Expanded(
-                        flex: 8,
-                        child: Column(
-                          //mainAxisSize: MainAxisSize.min,
-                          children: [
-                            PreferredSize(
-                              preferredSize: Size(size.width, 60.0),
-                              child: DashboardAppBar(
-                                automaticallyImplyLeading: false,
-                                addPropertyButton: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 15.0),
-                                  child: RaisedButton.icon(
-                                    label: const Text(
-                                      "New Property",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    color: EKodi().themeColor,
-                                    elevation: 0.0,
-                                    onPressed: addNewProperty,
-                                    icon: const Icon(
-                                      Icons.add,
-                                      color: Colors.white,
+              return Scaffold(
+                backgroundColor: Colors.grey.shade50,
+                body: loading
+                    ? const LoadingAnimation()
+                    : Row(
+                        children: [
+                          const Expanded(
+                            flex: 2,
+                            child: CustomDashDrawer(),
+                          ),
+                          Expanded(
+                            flex: 8,
+                            child: Column(
+                              //mainAxisSize: MainAxisSize.min,
+                              children: [
+                                PreferredSize(
+                                  preferredSize: Size(size.width, 60.0),
+                                  child: DashboardAppBar(
+                                    automaticallyImplyLeading: false,
+                                    addPropertyButton: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0, vertical: 15.0),
+                                      child: RaisedButton.icon(
+                                        label: const Text(
+                                          "New Property",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        color: EKodi().themeColor,
+                                        elevation: 0.0,
+                                        onPressed: addNewProperty,
+                                        icon: const Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Stack(
-                                children: [
-                                  SizedBox(
-                                    height: size.height,
-                                    width: size.width,
-                                  ),
-                                  Positioned(
-                                    top: 0.0,
-                                    left: 0.0,
-                                    child: Image.asset("assets/images/baner_dec_left.png"),
-                                  ),
-                                  Positioned(
-                                    top: 0.0,
-                                    right: 0.0,
-                                    child: Image.asset("assets/images/baner_dec_right.png"),
-                                  ),
-                                  Positioned(
-                                    top: 0.0,
-                                    bottom: 0.0,
-                                    left: 0.0,
-                                    right: 0.0,
-                                    child: RawScrollbar(
-                                      controller: _controller,
-                                      isAlwaysShown: true,
-                                      radius: const Radius.circular(5.0),
-                                      thumbColor: Colors.grey,
-                                      thickness: 10,
-                                      child: SingleChildScrollView(
-                                      controller: _controller,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: size.width * 0.03),
-                                        child: displayTab(account,currentTab, size, sizeInfo,
-                                            properties, occupiedUnits, vacantUnits,
-                                            start: startDate, end: endDate),
+                                Expanded(
+                                  child: Stack(
+                                    children: [
+                                      SizedBox(
+                                        height: size.height,
+                                        width: size.width,
                                       ),
-                                    ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                                      Positioned(
+                                        top: 0.0,
+                                        left: 0.0,
+                                        child: Image.asset(
+                                            "assets/images/baner_dec_left.png"),
+                                      ),
+                                      Positioned(
+                                        top: 0.0,
+                                        right: 0.0,
+                                        child: Image.asset(
+                                            "assets/images/baner_dec_right.png"),
+                                      ),
+                                      Positioned(
+                                        top: 0.0,
+                                        bottom: 0.0,
+                                        left: 0.0,
+                                        right: 0.0,
+                                        child: RawScrollbar(
+                                          controller: _controller,
+                                          isAlwaysShown: true,
+                                          radius: const Radius.circular(5.0),
+                                          thumbColor: Colors.grey,
+                                          thickness: 10,
+                                          child: SingleChildScrollView(
+                                            controller: _controller,
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal:
+                                                      size.width * 0.03),
+                                              child: displayTab(
+                                                  account,
+                                                  currentTab,
+                                                  size,
+                                                  sizeInfo,
+                                                  properties,
+                                                  occupiedUnits,
+                                                  vacantUnits,
+                                                  start: startDate,
+                                                  end: endDate),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              }
+              );
+            }
           },
         );
       },
@@ -517,11 +564,11 @@ class _LandlordDashMobileState extends State<LandlordDashMobile> {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(userID)
-        .collection("paymentInfo").get().then((value) {
-      if(value.docs.isEmpty)
-      {
+        .collection("paymentInfo")
+        .get()
+        .then((value) {
+      if (value.docs.isEmpty) {
         Timer(const Duration(seconds: 7), () async {
-
           promptPaymentMethod();
         });
       }
@@ -541,13 +588,23 @@ class _LandlordDashMobileState extends State<LandlordDashMobile> {
                 children: [
                   ListTile(
                     onTap: () {},
-                    leading: Image.asset("assets/mpesa.png", height: 50.0, width: 50.0, fit: BoxFit.contain,),
+                    leading: Image.asset(
+                      "assets/mpesa.png",
+                      height: 50.0,
+                      width: 50.0,
+                      fit: BoxFit.contain,
+                    ),
                     title: const Text("M-Pesa"),
                     subtitle: const Text("Setup your Paybill or Buy Goods"),
                   ),
                   ListTile(
                     onTap: () {},
-                    leading: Image.asset("assets/visa.png", height: 50.0, width: 50.0, fit: BoxFit.contain,),
+                    leading: Image.asset(
+                      "assets/visa.png",
+                      height: 50.0,
+                      width: 50.0,
+                      fit: BoxFit.contain,
+                    ),
                     title: const Text("Bank"),
                     subtitle: const Text("Setup your bank details"),
                   ),
@@ -557,23 +614,25 @@ class _LandlordDashMobileState extends State<LandlordDashMobile> {
             actions: [
               RaisedButton(
                 color: EKodi().themeColor,
-                onPressed: () {Navigator.pop(context);},
-                child: const Text("Close", style: TextStyle(color: Colors.white),),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Close",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
             ],
           );
-        }
-    );
+        });
   }
-  
+
   addNewProperty() async {
-
     context.read<TabProvider>().changeTab("AddProperty");
-
   }
 
-  displayTabs(Size size, String currentTab,
-      List<Property> properties, int occupiedUnits, int vacantUnits, bool isChatOpen, Account account) {
+  displayTabs(Size size, String currentTab, List<Property> properties,
+      int occupiedUnits, int vacantUnits, bool isChatOpen, Account account) {
     switch (currentTab) {
       case "Dashboard":
         return SingleChildScrollView(
@@ -589,45 +648,48 @@ class _LandlordDashMobileState extends State<LandlordDashMobile> {
               properties.isNotEmpty
                   ? const RevenueOverview()
                   : Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 5.0),
+                      child: Container(
                         width: size.width,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0),
+                            borderRadius: BorderRadius.circular(5.0),
                             border: Border.all(
                               color: Colors.grey.shade300,
                               width: 1.0,
-                            )
-                        ),
-                      child: Center(
-                child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 30.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          RaisedButton.icon(
-                            hoverColor: Colors.transparent,
-                            label: Text(
-                              "New Property",
-                              style: TextStyle(color: EKodi().themeColor),
-                            ),
-                            color: EKodi().themeColor.withOpacity(0.1),
-                            elevation: 0.0,
-                            onPressed: addNewProperty,
-                            icon: Icon(
-                              Icons.add,
-                              color: EKodi().themeColor,
+                            )),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 30.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset("assets/vector/apartment.png",
+                                    height: 100.0,
+                                    width: 100.0,
+                                    fit: BoxFit.contain),
+                                RaisedButton.icon(
+                                  hoverColor: Colors.transparent,
+                                  label: Text(
+                                    "New Property",
+                                    style: TextStyle(color: EKodi().themeColor),
+                                  ),
+                                  color: EKodi().themeColor.withOpacity(0.1),
+                                  elevation: 0.0,
+                                  onPressed: addNewProperty,
+                                  icon: Icon(
+                                    Icons.add,
+                                    color: EKodi().themeColor,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                ),
-              ),
                     ),
-                  ),
               const ExpiringLeases(),
               PropertiesCard(
                 properties: properties,
@@ -653,7 +715,9 @@ class _LandlordDashMobileState extends State<LandlordDashMobile> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: const [
                 DateSelector(),
-                SizedBox(height: 10.0,),
+                SizedBox(
+                  height: 10.0,
+                ),
                 Accounting(),
               ],
             ),
@@ -678,7 +742,9 @@ class _LandlordDashMobileState extends State<LandlordDashMobile> {
       case "PropertyImages":
         return const PropertyImagesPage();
       case "Invoice":
-        return InvoicePage(properties: properties,);
+        return InvoicePage(
+          properties: properties,
+        );
       case "AddProperty":
         return const AddProperty();
       case "IncomeExpenseStatement":
@@ -715,68 +781,68 @@ class _LandlordDashMobileState extends State<LandlordDashMobile> {
           .orderBy("timestamp", descending: true)
           .snapshots(),
       builder: (context, snapshot) {
-        if(!snapshot.hasData)
-          {
-            return const LoadingAnimation();
+        if (!snapshot.hasData) {
+          return const LoadingAnimation();
+        } else {
+          List<Property> properties = [];
+          int vacantUnits = 0;
+          int occupiedUnits = 0;
+
+          for (var element in snapshot.data!.docs) {
+            Property property = Property.fromDocument(element);
+
+            properties.add(property);
+
+            vacantUnits = vacantUnits + property.vacant!.toInt();
+
+            occupiedUnits = occupiedUnits + property.occupied!.toInt();
           }
-        else 
-          {
-            List<Property> properties = [];
-            int vacantUnits = 0;
-            int occupiedUnits = 0;
 
-            for (var element in snapshot.data!.docs) {
-              Property property = Property.fromDocument(element);
-
-              properties.add(property);
-
-              vacantUnits = vacantUnits + property.vacant!.toInt();
-
-              occupiedUnits = occupiedUnits + property.occupied!.toInt();
-            }
-
-            return Scaffold(
-              backgroundColor: Colors.grey.shade50,
-              drawer: const CustomDashDrawer(),
-              floatingActionButton: currentTab == "Dashboard" ? FloatingActionButton(
-                child: const Icon(Icons.add, color: Colors.white),
-                onPressed: addNewProperty,
-                backgroundColor: EKodi().themeColor,
-              ) : Container(),
-              appBar: PreferredSize(
-                preferredSize: Size(size.width, 60.0),
-                child: DashboardAppBar(
-                  automaticallyImplyLeading: true,
-                  addPropertyButton: Container(),
-                ),
-              ),
-              body: Stack(
-                children: [
-                  SizedBox(
-                    height: size.height,
-                    width: size.width,
-                  ),
-                  Positioned(
-                    top: 0.0,
-                    left: 0.0,
-                    child: Image.asset("assets/images/baner_dec_left.png"),
-                  ),
-                  Positioned(
-                    top: 0.0,
-                    right: 0.0,
-                    child: Image.asset("assets/images/baner_dec_right.png"),
-                  ),
-                  Positioned(
-                    bottom: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    top: 0.0,
-                    child: displayTabs(size, currentTab, properties, occupiedUnits, vacantUnits, isChatOpen, account),
+          return Scaffold(
+            backgroundColor: Colors.grey.shade50,
+            drawer: const CustomDashDrawer(),
+            floatingActionButton: currentTab == "Dashboard"
+                ? FloatingActionButton(
+                    child: const Icon(Icons.add, color: Colors.white),
+                    onPressed: addNewProperty,
+                    backgroundColor: EKodi().themeColor,
                   )
-                ],
+                : Container(),
+            appBar: PreferredSize(
+              preferredSize: Size(size.width, 60.0),
+              child: DashboardAppBar(
+                automaticallyImplyLeading: true,
+                addPropertyButton: Container(),
               ),
-            );
-          }
+            ),
+            body: Stack(
+              children: [
+                SizedBox(
+                  height: size.height,
+                  width: size.width,
+                ),
+                Positioned(
+                  top: 0.0,
+                  left: 0.0,
+                  child: Image.asset("assets/images/baner_dec_left.png"),
+                ),
+                Positioned(
+                  top: 0.0,
+                  right: 0.0,
+                  child: Image.asset("assets/images/baner_dec_right.png"),
+                ),
+                Positioned(
+                  bottom: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  top: 0.0,
+                  child: displayTabs(size, currentTab, properties,
+                      occupiedUnits, vacantUnits, isChatOpen, account),
+                )
+              ],
+            ),
+          );
+        }
       },
     );
   }

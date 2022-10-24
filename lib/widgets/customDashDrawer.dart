@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,15 +21,15 @@ class CustomDashDrawer extends StatelessWidget {
           borderRadius: BorderRadius.circular(35.0),
           child: account.photoUrl! == ""
               ? Image.asset(
-            "assets/profile.png",
-            height: 70.0,
-            width: 70.0,
-          )
+                  "assets/profile.png",
+                  height: 70.0,
+                  width: 70.0,
+                )
               : Image.network(
-            account.photoUrl!,
-            height: 36.0,
-            width: 36.0,
-          ),
+                  account.photoUrl!,
+                  height: 36.0,
+                  width: 36.0,
+                ),
         ),
         const SizedBox(
           height: 10.0,
@@ -55,13 +54,14 @@ class CustomDashDrawer extends StatelessWidget {
         ),
         Text(
           account.accountType!,
-          style: const TextStyle( fontSize: 11.0),
+          style: const TextStyle(fontSize: 11.0),
         ),
       ],
     );
   }
 
-  Drawer _buildForDesktop(BuildContext context, Account account, Size size, String currentTab) {
+  Drawer _buildForDesktop(
+      BuildContext context, Account account, Size size, String currentTab) {
     bool isTenant = account.accountType == "Tenant";
 
     return Drawer(
@@ -73,7 +73,12 @@ class CustomDashDrawer extends StatelessWidget {
             height: size.height,
             width: size.width,
           ),
-          Image.asset("assets/images/drawer.png", height: size.height, width: size.width, fit: BoxFit.cover,),
+          Image.asset(
+            "assets/images/drawer.png",
+            height: size.height,
+            width: size.width,
+            fit: BoxFit.cover,
+          ),
           Positioned(
             top: 0.0,
             right: 0.0,
@@ -81,11 +86,17 @@ class CustomDashDrawer extends StatelessWidget {
             bottom: 0.0,
             child: ListView(
               children: [
-                SizedBox(
-                  height: size.height*0.2,
+                Image.asset(
+                  "assets/logo_white.png",
+                  //height: size.height * 0.2,
                   width: size.width,
-                  child: Center(child: Text("JVALUE", style: GoogleFonts.titanOne(color: Colors.white, fontSize: 20.0),)),
+                  fit: BoxFit.fitWidth,
                 ),
+                // SizedBox(
+                //   height: size.height*0.2,
+                //   width: size.width,
+                //   child: Center(child: Text("JVALUE", style: GoogleFonts.titanOne(color: Colors.white, fontSize: 20.0),)),
+                // ),
                 InkWell(
                   onTap: () {
                     context.read<TabProvider>().changeTab("Dashboard");
@@ -93,25 +104,29 @@ class CustomDashDrawer extends StatelessWidget {
                   child: AnimatedContainer(
                     duration: const Duration(seconds: 1),
                     height: 50.0,
-                    margin:const EdgeInsets.only(left: 10.0),
+                    margin: const EdgeInsets.only(left: 10.0),
                     decoration: BoxDecoration(
-                        color: currentTab == "Dashboard" ? Colors.white : Colors.transparent,
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(25.0))
-                    ),
+                        color: currentTab == "Dashboard"
+                            ? Colors.white
+                            : Colors.transparent,
+                        borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(25.0))),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: ListTile(
                         //contentPadding: EdgeInsets.zero,
                         leading: Icon(
                           Icons.dashboard,
-                          color:
-                          currentTab == "Dashboard" ? EKodi().themeColor : Colors.white,
+                          color: currentTab == "Dashboard"
+                              ? EKodi().themeColor
+                              : Colors.white,
                         ),
                         title: Text(
                           "Dashboard",
                           style: TextStyle(
-                            color:
-                            currentTab == "Dashboard" ?  EKodi().themeColor : Colors.white,
+                            color: currentTab == "Dashboard"
+                                ? EKodi().themeColor
+                                : Colors.white,
                           ),
                         ),
                       ),
@@ -124,18 +139,21 @@ class CustomDashDrawer extends StatelessWidget {
                   },
                   child: Container(
                     height: 50.0,
-                    margin:const EdgeInsets.only(left: 10.0),
+                    margin: const EdgeInsets.only(left: 10.0),
                     decoration: BoxDecoration(
-                        color: currentTab == "Accounting" ? Colors.white : Colors.transparent,
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(25.0))
-                    ),
+                        color: currentTab == "Accounting"
+                            ? Colors.white
+                            : Colors.transparent,
+                        borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(25.0))),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: ListTile(
                         leading: Icon(
                           Icons.paid_outlined,
-                          color:
-                          currentTab == "Accounting" ? EKodi().themeColor : Colors.white,
+                          color: currentTab == "Accounting"
+                              ? EKodi().themeColor
+                              : Colors.white,
                         ),
                         title: Text(
                           "Accounting",
@@ -149,65 +167,77 @@ class CustomDashDrawer extends StatelessWidget {
                     ),
                   ),
                 ),
-                isTenant ? InkWell(
-                  onTap: () {
-                    context.read<TabProvider>().changeTab("Invoice");
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(seconds: 1),
-                    height: 50.0,
-                    margin:const EdgeInsets.only(left: 10.0),
-                    decoration: BoxDecoration(
-                        color: currentTab == "Invoice" ? Colors.white : Colors.transparent,
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(25.0))
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.receipt_long_outlined,
-                          color: currentTab == "Invoice" ? EKodi().themeColor : Colors.white,
+                isTenant
+                    ? InkWell(
+                        onTap: () {
+                          context.read<TabProvider>().changeTab("Invoice");
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(seconds: 1),
+                          height: 50.0,
+                          margin: const EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              color: currentTab == "Invoice"
+                                  ? Colors.white
+                                  : Colors.transparent,
+                              borderRadius: const BorderRadius.horizontal(
+                                  left: Radius.circular(25.0))),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.receipt_long_outlined,
+                                color: currentTab == "Invoice"
+                                    ? EKodi().themeColor
+                                    : Colors.white,
+                              ),
+                              title: Text(
+                                "Invoices",
+                                style: TextStyle(
+                                  color: currentTab == "Invoice"
+                                      ? EKodi().themeColor
+                                      : Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        title: Text(
-                          "Invoices",
-                          style: TextStyle(
-                            color:
-                            currentTab == "Invoice" ? EKodi().themeColor : Colors.white,
+                      )
+                    : InkWell(
+                        onTap: () {
+                          context.read<TabProvider>().changeTab("Reports");
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(seconds: 1),
+                          height: 50.0,
+                          margin: const EdgeInsets.only(left: 10.0),
+                          decoration: BoxDecoration(
+                              color: currentTab == "Reports"
+                                  ? Colors.white
+                                  : Colors.transparent,
+                              borderRadius: const BorderRadius.horizontal(
+                                  left: Radius.circular(25.0))),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.receipt_long_outlined,
+                                color: currentTab == "Reports"
+                                    ? EKodi().themeColor
+                                    : Colors.white,
+                              ),
+                              title: Text(
+                                "Reports",
+                                style: TextStyle(
+                                  color: currentTab == "Reports"
+                                      ? EKodi().themeColor
+                                      : Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ) : InkWell(
-                  onTap: () {
-                    context.read<TabProvider>().changeTab("Reports");
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(seconds: 1),
-                    height: 50.0,
-                    margin:const EdgeInsets.only(left: 10.0),
-                    decoration: BoxDecoration(
-                        color: currentTab == "Reports" ? Colors.white : Colors.transparent,
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(25.0))
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.receipt_long_outlined,
-                          color: currentTab == "Reports" ? EKodi().themeColor : Colors.white,
-                        ),
-                        title: Text(
-                          "Reports",
-                          style: TextStyle(
-                            color:
-                            currentTab == "Reports" ? EKodi().themeColor : Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
                 InkWell(
                   onTap: () {
                     context.read<TabProvider>().changeTab("Messages");
@@ -215,23 +245,28 @@ class CustomDashDrawer extends StatelessWidget {
                   child: AnimatedContainer(
                     duration: const Duration(seconds: 1),
                     height: 50.0,
-                    margin:const EdgeInsets.only(left: 10.0),
+                    margin: const EdgeInsets.only(left: 10.0),
                     decoration: BoxDecoration(
-                        color: currentTab == "Messages" ? Colors.white : Colors.transparent,
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(25.0))
-                    ),
+                        color: currentTab == "Messages"
+                            ? Colors.white
+                            : Colors.transparent,
+                        borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(25.0))),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: ListTile(
                         leading: Icon(
                           Icons.question_answer_outlined,
-                          color: currentTab == "Messages" ? EKodi().themeColor : Colors.white,
+                          color: currentTab == "Messages"
+                              ? EKodi().themeColor
+                              : Colors.white,
                         ),
                         title: Text(
                           "Messages",
                           style: TextStyle(
-                            color:
-                            currentTab == "Messages" ? EKodi().themeColor : Colors.white,
+                            color: currentTab == "Messages"
+                                ? EKodi().themeColor
+                                : Colors.white,
                           ),
                         ),
                       ),
@@ -245,22 +280,28 @@ class CustomDashDrawer extends StatelessWidget {
                   child: AnimatedContainer(
                     duration: const Duration(seconds: 1),
                     height: 50.0,
-                    margin:const EdgeInsets.only(left: 10.0),
+                    margin: const EdgeInsets.only(left: 10.0),
                     decoration: BoxDecoration(
-                        color: currentTab == "Tasks" ? Colors.white : Colors.transparent,
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(25.0))
-                    ),
+                        color: currentTab == "Tasks"
+                            ? Colors.white
+                            : Colors.transparent,
+                        borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(25.0))),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: ListTile(
                         leading: Icon(
                           Icons.check_box_outlined,
-                          color: currentTab == "Tasks" ? EKodi().themeColor : Colors.white,
+                          color: currentTab == "Tasks"
+                              ? EKodi().themeColor
+                              : Colors.white,
                         ),
                         title: Text(
                           "Tasks",
                           style: TextStyle(
-                            color: currentTab == "Tasks" ? EKodi().themeColor : Colors.white,
+                            color: currentTab == "Tasks"
+                                ? EKodi().themeColor
+                                : Colors.white,
                           ),
                         ),
                       ),
@@ -274,33 +315,43 @@ class CustomDashDrawer extends StatelessWidget {
                   child: AnimatedContainer(
                     duration: const Duration(seconds: 1),
                     height: 50.0,
-                    margin:const EdgeInsets.only(left: 10.0),
+                    margin: const EdgeInsets.only(left: 10.0),
                     decoration: BoxDecoration(
-                        color: currentTab == "Profile" ? Colors.white : Colors.transparent,
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(25.0))
-                    ),
+                        color: currentTab == "Profile"
+                            ? Colors.white
+                            : Colors.transparent,
+                        borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(25.0))),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: ListTile(
                         leading: Icon(
                           Icons.person,
-                          color:
-                          currentTab == "Profile" ? EKodi().themeColor : Colors.white,
+                          color: currentTab == "Profile"
+                              ? EKodi().themeColor
+                              : Colors.white,
                         ),
                         title: Text(
                           "Account",
                           style: TextStyle(
-                            color:
-                            currentTab == "Profile" ? EKodi().themeColor : Colors.white,
+                            color: currentTab == "Profile"
+                                ? EKodi().themeColor
+                                : Colors.white,
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20.0,),
-                const Divider(color: Colors.white30,),
-                const SizedBox(height: 20.0,),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                const Divider(
+                  color: Colors.white30,
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: ListTile(
@@ -319,8 +370,7 @@ class CustomDashDrawer extends StatelessWidget {
                     title: const Text(
                       "Logout",
                       style: TextStyle(
-                        color:
-                        Colors.white,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -353,8 +403,10 @@ class CustomDashDrawer extends StatelessWidget {
 
     return ResponsiveBuilder(
       builder: (context, sizeInfo) {
-        bool isMobile = sizeInfo.isMobile; 
-        return isMobile ? _buildForDesktop(context, account, size, currentTab) : _buildForDesktop(context, account, size, currentTab);
+        bool isMobile = sizeInfo.isMobile;
+        return isMobile
+            ? _buildForDesktop(context, account, size, currentTab)
+            : _buildForDesktop(context, account, size, currentTab);
       },
     );
   }

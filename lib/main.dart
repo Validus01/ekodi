@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/chat/chatProvider/chatProvider.dart';
 import 'package:rekodi/config.dart';
@@ -17,6 +16,7 @@ import 'package:rekodi/providers/propertyProvider.dart';
 import 'package:rekodi/providers/tabProvider.dart';
 import 'package:rekodi/providers/tenantProvider.dart';
 import 'package:rekodi/providers/transactionProvider.dart';
+import 'package:seo_renderer/seo_renderer.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 // Import the generated file
@@ -71,14 +71,17 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'JVALUE',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
+    return RobotDetector(
+      child: MaterialApp(
+        title: 'JVALUE',
+        debugShowCheckedModeBanner: false,
+        navigatorObservers: [seoRouteObserver],
+        theme: ThemeData(
+          primarySwatch: Colors.pink,
+        ),
+        initialRoute: "/",
+        onGenerateRoute: CustomRoutes.router.generator,
       ),
-      initialRoute: "/",
-      onGenerateRoute: CustomRoutes.router.generator,
     );
   }
 }
@@ -104,7 +107,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () async {
       auth.authStateChanges().listen((User? user) async {
         if (user == null) {
-          CustomRoutes.router.navigateTo(context, "/authentication");
+          CustomRoutes.router.navigateTo(context, "/home");
         } else {
           final user = FirebaseAuth.instance.currentUser;
 
@@ -136,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen> {
           width: 300.0,
           fit: BoxFit.contain,
         ),
-        ),
-      );
+      ),
+    );
   }
 }

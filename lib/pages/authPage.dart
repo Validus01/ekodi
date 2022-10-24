@@ -1,17 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:rekodi/commonFunctions/fileManager.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/account.dart';
-import 'package:rekodi/pages/dashboards/dashboard.dart';
-import 'package:rekodi/pages/otpScreen.dart';
+import 'package:rekodi/pages/landingPage/widgets/staticAppbar.dart';
 import 'package:rekodi/providers/loader.dart';
 import 'package:rekodi/widgets/loadingAnimation.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -238,33 +235,12 @@ class _AuthPageState extends State<AuthPage> {
         bool isMobile = sizeInfo.isMobile;
 
         return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back_rounded,
-                  color: Colors.grey,
-                ),
+            appBar: PreferredSize(
+              preferredSize: Size(size.width, 100.0),
+              child: const StaticAppBar(
+                isShrink: true,
+                isAuth: true,
               ),
-              title: RichText(
-                text: TextSpan(
-                  //style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: 'e-',
-                        style: GoogleFonts.titanOne(
-                            color: Colors.blue, fontSize: 20.0)),
-                    TextSpan(
-                        text: 'KODI',
-                        style: GoogleFonts.titanOne(
-                            color: Colors.red, fontSize: 20.0)),
-                  ],
-                ),
-              ),
-              backgroundColor: Colors.grey.shade200,
-              elevation: 0.0,
             ),
             body: loading
                 ? const LoadingAnimation()
@@ -296,7 +272,7 @@ class _AuthPageState extends State<AuthPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(20.0),
                                   child: Text(
-                                      "Welcome to e-Kodi Property Management Software",
+                                      "Welcome to JVALUE Property Management Software",
                                       textAlign: TextAlign.center,
                                       maxLines: null,
                                       style: GoogleFonts.baloo2(
@@ -440,9 +416,10 @@ class _AuthPageState extends State<AuthPage> {
                                             ),
                                             suffixIcon: IconButton(
                                               icon: showPassword
-                                                  ? const Icon(Icons.visibility)
-                                                  : const Icon(Icons
-                                                      .visibility_off_outlined),
+                                                  ? const Icon(Icons
+                                                      .visibility_off_outlined)
+                                                  : const Icon(
+                                                      Icons.visibility),
                                               onPressed: showPassword
                                                   ? () {
                                                       setState(() =>
@@ -470,9 +447,10 @@ class _AuthPageState extends State<AuthPage> {
                                                 TextInputType.visiblePassword,
                                             suffixIcon: IconButton(
                                               icon: showCPassword
-                                                  ? Icon(Icons.visibility)
-                                                  : Icon(Icons
-                                                      .visibility_off_outlined),
+                                                  ? const Icon(Icons
+                                                      .visibility_off_outlined)
+                                                  : const Icon(
+                                                      Icons.visibility),
                                               onPressed: showCPassword
                                                   ? () {
                                                       setState(() =>
@@ -497,16 +475,22 @@ class _AuthPageState extends State<AuthPage> {
                                                     password.text.trim() ==
                                                         cPassword.text.trim() &&
                                                     cPassword.text.isNotEmpty) {
-                                                      FirebaseFirestore.instance.collection("users")
-                                                      .where("idNumber", isEqualTo: idNumber.text.isNotEmpty)
-                                                      .get().then((querySnapshot) {
-                                                        if(querySnapshot.docs.isEmpty) {
-                                                          handleAuth(context);
-                                                        } else {
-                                                          Fluttertoast.showToast(msg: "User Already Exists!");
-                                                        }
-                                                      });
-                                                  
+                                                  FirebaseFirestore.instance
+                                                      .collection("users")
+                                                      .where("idNumber",
+                                                          isEqualTo: idNumber
+                                                              .text.isNotEmpty)
+                                                      .get()
+                                                      .then((querySnapshot) {
+                                                    if (querySnapshot
+                                                        .docs.isEmpty) {
+                                                      handleAuth(context);
+                                                    } else {
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "User Already Exists!");
+                                                    }
+                                                  });
                                                 }
                                               },
                                               color: Theme.of(context)

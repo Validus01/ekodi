@@ -11,8 +11,18 @@ class Account {
   final String? accountType;
   final String? photoUrl;
   final List<dynamic>? deviceTokens;
+  final bool? verified;
 
-  Account({this.name,this.userID, this.deviceTokens, this.photoUrl, this.email, this.phone, this.idNumber, this.accountType});
+  Account(
+      {this.name,
+      this.userID,
+      this.deviceTokens,
+      this.photoUrl,
+      this.email,
+      this.phone,
+      this.idNumber,
+      this.verified,
+      this.accountType});
 
   Map<String, dynamic> toMap() {
     return {
@@ -23,7 +33,8 @@ class Account {
       "idNumber": idNumber,
       "accountType": accountType,
       "photoUrl": photoUrl,
-      "deviceTokens": deviceTokens
+      "deviceTokens": deviceTokens,
+      "verified": verified,
     };
   }
 
@@ -37,6 +48,7 @@ class Account {
       accountType: doc.get("accountType") ?? "",
       photoUrl: doc.get("photoUrl") ?? "",
       deviceTokens: doc.get("deviceTokens") ?? [],
+      verified: doc.get("verified") ?? false,
     );
   }
 
@@ -49,17 +61,19 @@ class Account {
         idNumber: doc["idNumber"],
         accountType: doc["accountType"],
         photoUrl: doc["photoUrl"],
-        deviceTokens: doc["deviceTokens"] ?? []
-    );
+        verified: doc["verified"],
+        deviceTokens: doc["deviceTokens"] ?? []);
   }
 
-  static String encode(List<Account> accounts) => json.encode(
-      accounts.map<Map<String, dynamic>>((account) => account.toMap()).toList());
-
+  static String encode(List<Account> accounts) => json.encode(accounts
+      .map<Map<String, dynamic>>((account) => account.toMap())
+      .toList());
 
   static List<Account> decode(String accountsString) {
-    if(accountsString.isNotEmpty) {
-      return (json.decode(accountsString) as List<dynamic>).map<Account>((item) => Account.fromJson(item)).toList();
+    if (accountsString.isNotEmpty) {
+      return (json.decode(accountsString) as List<dynamic>)
+          .map<Account>((item) => Account.fromJson(item))
+          .toList();
     } else {
       return [];
     }

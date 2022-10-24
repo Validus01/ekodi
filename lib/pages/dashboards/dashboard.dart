@@ -26,12 +26,14 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     checkDeviceTokens();
+
     getUserLocation();
+
     super.initState();
   }
 
-  getUserLocation() async {
-    try{
+  Future<void> getUserLocation() async {
+    try {
       Position position = await LocationAPI().determinePosition();
 
       int timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -43,10 +45,18 @@ class _DashboardState extends State<Dashboard> {
         timestamp: timestamp,
       );
 
-      String userID = Provider.of<EKodi>(context, listen: false).account.userID!;
+      String userID =
+          Provider.of<EKodi>(context, listen: false).account.userID!;
 
-      await FirebaseFirestore.instance.collection("users").doc(userID).collection("location").doc(locationInfo.locationID).set(locationInfo.toMap()).then((value) => print("Location: ${position.latitude}, ${position.longitude}"));
-    } catch(e){
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userID)
+          .collection("location")
+          .doc(locationInfo.locationID)
+          .set(locationInfo.toMap())
+          .then((value) =>
+              print("Location: ${position.latitude}, ${position.longitude}"));
+    } catch (e) {
       Fluttertoast.showToast(msg: "ERROR: Could not get location");
     }
   }

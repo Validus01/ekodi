@@ -1,19 +1,15 @@
-
 import 'package:fluro/fluro.dart';
-import 'package:provider/provider.dart';
 import 'package:rekodi/main.dart';
 import 'package:rekodi/pages/authPage.dart';
 import 'package:rekodi/pages/dashboards/dashboard.dart';
-
-import 'providers/tabProvider.dart';
+import 'package:rekodi/pages/landingPage/landingPage.dart';
 
 class CustomRoutes {
   static final FluroRouter router = FluroRouter();
 
-  static Handler addPropertyHandler =
+  static Handler homeHandler =
       Handler(handlerFunc: (context, Map<String, dynamic> params) {
-
-      context!.read<TabProvider>().changeTab("AddProperty");
+    return const LandingPage();
   });
 
   static Handler authHandler =
@@ -41,7 +37,7 @@ class CustomRoutes {
     router.define("/dashboard",
         handler: dashboardUserHandler, transitionType: TransitionType.fadeIn);
 
-        router.define("/dashboard/add_property",
-        handler: addPropertyHandler, transitionType: TransitionType.fadeIn);
+    router.define("/home",
+        handler: homeHandler, transitionType: TransitionType.fadeIn);
   }
 }
