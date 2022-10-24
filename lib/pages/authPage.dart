@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/account.dart';
@@ -36,8 +37,9 @@ class _AuthPageState extends State<AuthPage> {
   String accountType = 'Tenant';
   bool showPassword = true;
   bool showCPassword = true;
-  PlatformFile? pickedFile;
+  XFile? pickedFile;
   //FirebaseAuth auth = FirebaseAuth.instance;
+  final ImagePicker _picker = ImagePicker();
 
   double getWidth(Size size, SizingInformation sizeInfo) {
     if (sizeInfo.isMobile) {
@@ -200,24 +202,32 @@ class _AuthPageState extends State<AuthPage> {
     // }
   }
 
-  Future pickImageFromGallery() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
+  // Future pickImageFromGallery() async {
+  //   FilePickerResult? result =
+  //       await FilePicker.platform.pickFiles(type: FileType.image);
 
-    if (result != null) {
-      setState(() {
-        pickedFile = result.files.first;
-      });
-    } else {
-      // User canceled the picker
-    }
+  //   if (result != null) {
+  //     setState(() {
+  //       pickedFile = result.files.first;
+  //     });
+  //   } else {
+  //     // User canceled the picker
+  //   }
+  // }
+
+  Future pickImageFromCamera() async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera, preferredCameraDevice: CameraDevice.front);
+
+    setState(() {
+      pickedFile = photo;
+    });
   }
 
-  displayPickedFile() {
+  displayPickedFile() async {
     return ClipRRect(
       borderRadius: BorderRadius.circular(50.0),
       child: Image.memory(
-        pickedFile!.bytes!,
+        await pickedFile!.readAsBytes(),
         height: 100.0,
         width: 100.0,
         fit: BoxFit.cover,
@@ -327,7 +337,7 @@ class _AuthPageState extends State<AuthPage> {
                                                       hoverColor:
                                                           Colors.transparent,
                                                       onPressed: () =>
-                                                          pickImageFromGallery(),
+                                                          pickImageFromCamera(),
                                                       icon: const Icon(
                                                         Icons.edit,
                                                         color: Colors.grey,

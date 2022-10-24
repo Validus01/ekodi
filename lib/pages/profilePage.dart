@@ -55,8 +55,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (pickedFile != null) {
       //upload image to storage
-      String downloadUrl =
-          await FileManager().uploadProfilePhoto(account.userID!, pickedFile!);
+      String downloadUrl = "";
+          //==================================================await FileManager().uploadProfilePhoto(account.userID!, pickedFile!);
 
       Account newAccount = Account(
           name: name.text.trim(),

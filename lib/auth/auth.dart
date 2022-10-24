@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/model/account.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -324,7 +325,7 @@ class Authentication {
     String? password,
     String? phone,
     String? accountType,
-    PlatformFile? pickedFile,
+    XFile? pickedFile,
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -414,7 +415,7 @@ class Authentication {
     String? password,
     String? phone,
     String? accountType,
-    PlatformFile? pickedFile,
+    XFile? pickedFile,
     UserCredential? userCredential,
   }) async {
     String photoURL = "";
@@ -449,7 +450,7 @@ class Authentication {
     String? password,
     String? phone,
     String? accountType,
-    PlatformFile? pickedFile,
+    XFile? pickedFile,
   }) async {
     try {
       ConfirmationResult confirmationResult =

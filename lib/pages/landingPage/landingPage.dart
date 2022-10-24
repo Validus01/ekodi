@@ -11,14 +11,24 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  final ScrollController _controller = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        child: Column(
-          children: const [Intro(), Welcome(), Footer()],
+      body: RawScrollbar(
+        controller: _controller,
+        isAlwaysShown: true,
+        radius: const Radius.circular(5.0),
+        thumbColor: Colors.grey,
+        thickness: 10,
+        child: SingleChildScrollView(
+          controller: _controller,
+          child: Column(
+            children: const [Intro(), Welcome(), Footer()],
+          ),
         ),
       ),
     );

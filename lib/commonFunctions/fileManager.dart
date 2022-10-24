@@ -25,18 +25,18 @@ class FileManager {
   }
 
   Future<String> uploadProfilePhoto(
-      String userID, PlatformFile pickedFile) async {
+      String userID, XFile pickedFile) async {
     // Create the file metadata
     final metadata =
-        SettableMetadata(contentType: "image/${pickedFile.extension}");
+        SettableMetadata(contentType: "image/jpg");
 
     // Create a reference to the Firebase Storage bucket
     final storageRef = FirebaseStorage.instance.ref();
 
     // Upload file and metadata to the path 'images/mountains.jpg'
     UploadTask uploadTask = storageRef
-        .child("ProfilePhotos/$userID/photo_$userID.${pickedFile.extension}")
-        .putData(pickedFile.bytes!, metadata);
+        .child("ProfilePhotos/$userID/photo_$userID.jpg")
+        .putData(await pickedFile.readAsBytes(), metadata);
 
     TaskSnapshot snapshot = await uploadTask;
 
