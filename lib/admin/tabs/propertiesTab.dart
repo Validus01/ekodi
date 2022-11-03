@@ -112,7 +112,7 @@ class _PropertiesTabState extends State<PropertiesTab> {
 
                                 return Image.network(
                                   imagesCollection[0].imageUrls![0],
-                                  height: 150.0,
+                                  height: size.height*0.25,
                                   width: isMobile
                                       ? size.width * 0.3
                                       : size.width * 0.2,

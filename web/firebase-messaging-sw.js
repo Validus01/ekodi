@@ -1,5 +1,5 @@
-importScripts("https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/9.6.10/firebase-messaging.js");
+importScripts("https://www.gstatic.com/firebasejs/9.9.0/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/9.9.0/firebase-messaging-compat.js");
 
 firebase.initializeApp({
     apiKey: "AIzaSyAGz6yr0SkQI-MjSMiBZKoRd4SIEFhW4QA",
@@ -13,24 +13,17 @@ firebase.initializeApp({
   });
 
   // Necessary to receive background message
-  const messaging = firebase.messaging();
-messaging.setBackgroundMessageHandler(function (payload) {
-    const promiseChain = clients
-        .matchAll({
-            type: "window",
-            includeUncontrolled: true
-        })
-        .then(windowClients => {
-            for (let i = 0; i < windowClients.length; i++) {
-                const windowClient = windowClients[i];
-                windowClient.postMessage(payload);
-            }
-        })
-        .then(() => {
-            return registration.showNotification("New Message");
-        });
-    return promiseChain;
-});
-self.addEventListener('notificationclick', function (event) {
-    console.log('notification received: ', event)
-});
+  const messaging = getMessaging();
+  onBackgroundMessage(messaging, (payload) => {
+    console.log('[firebase-messaging-sw.js] Received background message ', payload);
+    // Customize notification here
+    const notificationTitle = 'Background Message Title';
+    const notificationOptions = {
+      body: 'Background Message body.',
+      icon: '/firebase-logo.png'
+    };
+  
+    self.registration.showNotification(notificationTitle,
+      notificationOptions);
+  });
+  

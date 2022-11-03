@@ -10,8 +10,8 @@ import 'package:rekodi/admin/admin.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/locationInfo.dart';
 import 'package:rekodi/pages/dashboards/landlordDash.dart';
-import 'package:rekodi/pages/dashboards/serviceDash.dart';
 import 'package:rekodi/pages/dashboards/tenantDash.dart';
+import 'package:rekodi/serviceProvider/serviceProviderDashboard.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../model/account.dart';
@@ -138,9 +138,9 @@ class _DashboardState extends State<Dashboard> {
         );
       case "Service Provider":
         return ScreenTypeLayout.builder(
-          mobile: (BuildContext context) => const ServiceDash(),
-          tablet: (BuildContext context) => const ServiceDash(),
-          desktop: (BuildContext context) => const ServiceDash(),
+          mobile: (BuildContext context) => const ServiceProviderDashboard(),
+          tablet: (BuildContext context) => const ServiceProviderDashboard(),
+          desktop: (BuildContext context) => const ServiceProviderDashboard(),
           watch: (BuildContext context) => Container(color: Colors.purple),
         );
       case "ADMIN":
