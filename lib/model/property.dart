@@ -15,22 +15,23 @@ class Property {
   final String? publisherID;
   final int? occupied;
   final int? vacant;
+  final String? priceRange;
 
-
-  Property(
-      {this.name,
-        this.timestamp,
-        this.publisherID,
-        this.propertyID,
-        this.country,
-        this.city,
-        this.town,
-        this.address,
-        this.units,
-        this.notes,
-        this.occupied,
-        this.vacant,
-      });
+  Property({
+    this.name,
+    this.timestamp,
+    this.publisherID,
+    this.propertyID,
+    this.country,
+    this.city,
+    this.town,
+    this.address,
+    this.units,
+    this.notes,
+    this.occupied,
+    this.priceRange,
+    this.vacant,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -46,6 +47,7 @@ class Property {
       "publisherID": publisherID,
       "occupied": occupied,
       "vacant": vacant,
+      "priceRange": priceRange,
     };
   }
 
@@ -63,36 +65,38 @@ class Property {
       publisherID: doc.get("publisherID") ?? "",
       vacant: doc.get("vacant") ?? "",
       occupied: doc.get("occupied") ?? "",
+      priceRange: doc.get("priceRange") ?? "",
     );
   }
 
   factory Property.fromJson(Map<String, dynamic> doc) {
     return Property(
-      propertyID: doc['propertyID'],
-      name: doc["name"],
-      country: doc["country"],
-      city: doc["city"],
-      town: doc["town"],
-      address: doc["address"],
-      units: doc["units"],
-      notes: doc["notes"],
-      timestamp: doc["timestamp"],
-      publisherID: doc["publisherID"],
-      vacant: doc["vacant"],
-      occupied: doc["occupied"],
-    );
+        propertyID: doc['propertyID'],
+        name: doc["name"],
+        country: doc["country"],
+        city: doc["city"],
+        town: doc["town"],
+        address: doc["address"],
+        units: doc["units"],
+        notes: doc["notes"],
+        timestamp: doc["timestamp"],
+        publisherID: doc["publisherID"],
+        vacant: doc["vacant"],
+        occupied: doc["occupied"],
+        priceRange: doc["priceRange"]);
   }
 
-  static String encode(List<Property> properties) => json.encode(
-      properties.map<Map<String, dynamic>>((property) => property.toMap()).toList());
-
+  static String encode(List<Property> properties) => json.encode(properties
+      .map<Map<String, dynamic>>((property) => property.toMap())
+      .toList());
 
   static List<Property> decode(String propertiesString) {
-    if(propertiesString.isNotEmpty) {
-      return (json.decode(propertiesString) as List<dynamic>).map<Property>((item) => Property.fromJson(item)).toList();
+    if (propertiesString.isNotEmpty) {
+      return (json.decode(propertiesString) as List<dynamic>)
+          .map<Property>((item) => Property.fromJson(item))
+          .toList();
     } else {
       return [];
     }
   }
-
 }

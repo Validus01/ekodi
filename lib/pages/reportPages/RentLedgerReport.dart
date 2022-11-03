@@ -269,14 +269,13 @@ class _RentLedgerReportState extends State<RentLedgerReport> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3.0),
                                   border: Border.all(
-                                      color: EKodi().themeColor, width: 1.0)),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
+                                      color: EKodi.themeColor, width: 1.0)),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Center(
                                     child: Text(
                                   "Back",
-                                  style: TextStyle(color: EKodi().themeColor),
+                                  style: TextStyle(color: EKodi.themeColor),
                                 )),
                               ),
                             ),

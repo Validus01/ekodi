@@ -6,10 +6,13 @@ import 'model/account.dart';
 class EKodi with ChangeNotifier {
   Account? _account;
   ServiceProvider? _serviceProvider;
-  final Color themeColor = Colors.pink; //Color.fromRGBO(232, 60, 74, 1);
+  static const Color themeColor = Colors.pink; //Color.fromRGBO(232, 60, 74, 1);
   static String vapidKey =
       "BL7WNY4Es4QjhokvQjwt6aDCHkHfmOh-3fGstQXJM0aeDrOMw7HOScHU7Lco6gSaei4caiq9I5ye65aFuLmxH2c";
   // bool? _isServiceProvider;
+
+  static const String contactPhone = "+254701518100";
+  static const String contactEmail = "info@jvalueconsultants.com";
 
   Account get account => _account!;
   ServiceProvider get serviceProvider => _serviceProvider!;

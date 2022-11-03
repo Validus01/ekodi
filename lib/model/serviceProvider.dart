@@ -9,6 +9,7 @@ class ServiceProvider {
   final String? country;
   final String? description;
   final String? photoUrl;
+  final String? previewUrl;
   final List<dynamic>? ratings;
   final int? rating;
   final int? timestamp;
@@ -21,11 +22,12 @@ class ServiceProvider {
       this.phone,
       this.city,
       this.country,
-        this.ratings,
-        this.rating,
-        this.timestamp,
-        this.category,
-        this.photoUrl,
+      this.ratings,
+      this.rating,
+      this.timestamp,
+      this.category,
+      required this.previewUrl,
+      this.photoUrl,
       this.description});
 
   Map<String, dynamic> toMap() {
@@ -42,6 +44,7 @@ class ServiceProvider {
       "rating": rating,
       "timestamp": timestamp,
       "category": category,
+      "previewUrl": previewUrl
     };
   }
 
@@ -58,8 +61,8 @@ class ServiceProvider {
       ratings: doc.get("ratings") ?? "",
       rating: doc.get("rating") ?? "",
       timestamp: doc.get("timestamp") ?? "",
-      category: doc.get("category") ?? ""
+      category: doc.get("category") ?? "",
+      previewUrl: doc.get("previewUrl") ?? "",
     );
   }
-
 }

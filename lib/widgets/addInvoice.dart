@@ -15,7 +15,6 @@ import '../model/account.dart';
 import '../model/unit.dart';
 import 'customTextField.dart';
 
-
 class AddInvoice extends StatefulWidget {
   final List<Property>? properties;
   const AddInvoice({Key? key, this.properties}) : super(key: key);
@@ -25,7 +24,6 @@ class AddInvoice extends StatefulWidget {
 }
 
 class _AddInvoiceState extends State<AddInvoice> {
-
   TextEditingController landlordName = TextEditingController();
   TextEditingController landlordEmail = TextEditingController();
   TextEditingController tenantName = TextEditingController();
@@ -45,7 +43,6 @@ class _AddInvoiceState extends State<AddInvoice> {
   List<Bill> bills = [];
   bool loading = false;
 
-
   @override
   void initState() {
     getUserInfo();
@@ -59,7 +56,6 @@ class _AddInvoiceState extends State<AddInvoice> {
       landlordName.text = userInfo.name!;
       landlordEmail.text = userInfo.email!;
     });
-
   }
 
   getUnits() async {
@@ -67,15 +63,17 @@ class _AddInvoiceState extends State<AddInvoice> {
       units.clear();
     });
 
-    await FirebaseFirestore.instance.collection("properties")
-          .doc(selectedProperty!.propertyID).collection("units")
-          .where("isOccupied", isEqualTo: true).get().then((value) {
-        for (var element in value.docs) {
-          units.add(Unit.fromDocument(element));
-        }
-      });
-
-
+    await FirebaseFirestore.instance
+        .collection("properties")
+        .doc(selectedProperty!.propertyID)
+        .collection("units")
+        .where("isOccupied", isEqualTo: true)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        units.add(Unit.fromDocument(element));
+      }
+    });
   }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
@@ -98,17 +96,16 @@ class _AddInvoiceState extends State<AddInvoice> {
           title: const Text("Pick Starting Date"),
           content: Container(
             height: isMobile ? size.height * 0.4 : size.height * 0.6,
-            width: isMobile ? size.width * 0.8 : size.width*0.4,
+            width: isMobile ? size.width * 0.8 : size.width * 0.4,
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20.0)
-            ),
+                color: Colors.white, borderRadius: BorderRadius.circular(20.0)),
             child: SfDateRangePicker(
               view: DateRangePickerView.month,
               onSelectionChanged: _onSelectionChanged,
               enableMultiView: isMobile ? false : true,
               selectionMode: DateRangePickerSelectionMode.single,
-              initialSelectedDate: DateTime.fromMillisecondsSinceEpoch(startDate),
+              initialSelectedDate:
+                  DateTime.fromMillisecondsSinceEpoch(startDate),
               // initialSelectedRange: PickerDateRange(
               //     DateTime.fromMillisecondsSinceEpoch(startDate),
               //     DateTime.fromMillisecondsSinceEpoch(endDate)
@@ -117,9 +114,14 @@ class _AddInvoiceState extends State<AddInvoice> {
           ),
           actions: [
             TextButton.icon(
-              onPressed: () {Navigator.pop(context);},
+              onPressed: () {
+                Navigator.pop(context);
+              },
               icon: Icon(Icons.done, color: Theme.of(context).primaryColor),
-              label: Text("Done", style: TextStyle(color: Theme.of(context).primaryColor),),
+              label: Text(
+                "Done",
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
             )
           ],
         );
@@ -132,7 +134,10 @@ class _AddInvoiceState extends State<AddInvoice> {
       loading = true;
     });
 
-    if(bills.isNotEmpty && selectedUnit != null && selectedTenant != null && selectedProperty != null) {
+    if (bills.isNotEmpty &&
+        selectedUnit != null &&
+        selectedTenant != null &&
+        selectedProperty != null) {
       Invoice invoiceDetails = Invoice(
         invoiceID: invoiceID,
         timestamp: DateTime.now().millisecondsSinceEpoch,
@@ -148,7 +153,8 @@ class _AddInvoiceState extends State<AddInvoice> {
       );
 
       //save pdf to document
-      final String pdfUrl = await PdfInvoiceApi.generateInvoice(selectedTenant!, invoiceDetails);
+      final String pdfUrl =
+          await PdfInvoiceApi.generateInvoice(selectedTenant!, invoiceDetails);
 
       Invoice invoiceFinal = Invoice(
         invoiceID: invoiceID,
@@ -165,31 +171,41 @@ class _AddInvoiceState extends State<AddInvoice> {
       );
 
       //1.1 record invoice to tenant
-      await FirebaseFirestore.instance.collection("users").doc(selectedTenant!.userID)
-          .collection("invoices").doc(invoiceFinal.invoiceID).set(invoiceFinal.toMap());
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(selectedTenant!.userID)
+          .collection("invoices")
+          .doc(invoiceFinal.invoiceID)
+          .set(invoiceFinal.toMap());
 
       //2.1 record invoice to landlord
-      await FirebaseFirestore.instance.collection("users").doc(account.userID)
-          .collection("invoices").doc(invoiceFinal.invoiceID).set(invoiceFinal.toMap());
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(account.userID)
+          .collection("invoices")
+          .doc(invoiceFinal.invoiceID)
+          .set(invoiceFinal.toMap());
 
       //2.2 record invoice to property
-      await FirebaseFirestore.instance.collection("properties").doc(selectedUnit!.propertyID)
-          .collection("invoices").doc(invoiceFinal.invoiceID).set(invoiceFinal.toMap());
+      await FirebaseFirestore.instance
+          .collection("properties")
+          .doc(selectedUnit!.propertyID)
+          .collection("invoices")
+          .doc(invoiceFinal.invoiceID)
+          .set(invoiceFinal.toMap());
 
       setState(() {
         loading = false;
         bills.clear();
       });
-
     }
-
   }
-  
+
   addBillDialog(BuildContext context, Size size, bool isMobile) {
-    double width = isMobile ? size.width*0.8 : size.width*0.4;
+    double width = isMobile ? size.width * 0.8 : size.width * 0.4;
 
     showDialog(
-        context:  context,
+        context: context,
         builder: (c) {
           return AlertDialog(
             title: const Text("Add Bill"),
@@ -241,14 +257,19 @@ class _AddInvoiceState extends State<AddInvoice> {
               RaisedButton.icon(
                 onPressed: () {
                   Bill bill = Bill(
-                      timestamp: DateTime.now().millisecondsSinceEpoch,
-                      billType: billType.text.trim(),
-                      details: details.text.trim(),
-                      period: int.parse(period.text.trim()),
-                      paidAmount: int.parse(paidAmount.text.trim()),
-                      actualAmount: int.parse(actualAmount.text.trim()),
-                      balance: int.parse(actualAmount.text.trim()) - int.parse(paidAmount.text.trim()),
-                      isPaid: int.parse(actualAmount.text.trim()) - int.parse(paidAmount.text.trim()) > 0 ? false : true,
+                    timestamp: DateTime.now().millisecondsSinceEpoch,
+                    billType: billType.text.trim(),
+                    details: details.text.trim(),
+                    period: int.parse(period.text.trim()),
+                    paidAmount: int.parse(paidAmount.text.trim()),
+                    actualAmount: int.parse(actualAmount.text.trim()),
+                    balance: int.parse(actualAmount.text.trim()) -
+                        int.parse(paidAmount.text.trim()),
+                    isPaid: int.parse(actualAmount.text.trim()) -
+                                int.parse(paidAmount.text.trim()) >
+                            0
+                        ? false
+                        : true,
                   );
 
                   bills.add(bill);
@@ -263,14 +284,19 @@ class _AddInvoiceState extends State<AddInvoice> {
 
                   Navigator.pop(context);
                 },
-                label: const Text("Add", style: TextStyle(color: Colors.white),),
-                color: EKodi().themeColor,
-                icon: const Icon(Icons.add, color: Colors.white,),
+                label: const Text(
+                  "Add",
+                  style: TextStyle(color: Colors.white),
+                ),
+                color: EKodi.themeColor,
+                icon: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
               )
             ],
           );
-        }
-    );
+        });
   }
 
   Widget showBills(BuildContext context, Size size, bool isMobile) {
@@ -280,8 +306,13 @@ class _AddInvoiceState extends State<AddInvoice> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Bills", style: Theme.of(context).textTheme.titleMedium,),
-          Divider(color: Colors.grey.shade300,),
+          Text(
+            "Bills",
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          Divider(
+            color: Colors.grey.shade300,
+          ),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: List.generate(bills.length, (index) {
@@ -289,27 +320,36 @@ class _AddInvoiceState extends State<AddInvoice> {
 
               return Card(
                 child: ListTile(
-                  leading: Text("${index+1}", style: const TextStyle(fontWeight: FontWeight.w700),),
+                  leading: Text(
+                    "${index + 1}",
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
                   title: Text(bill.billType!),
                   subtitle: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Paid: "+bill.paidAmount!.toString()),
-                      Text("Actual Amount: "+bill.actualAmount!.toString()),
-                      Text("Period(Days): "+bill.period!.toString()),
+                      Text("Paid: " + bill.paidAmount!.toString()),
+                      Text("Actual Amount: " + bill.actualAmount!.toString()),
+                      Text("Period(Days): " + bill.period!.toString()),
                       bill.billType == "Rent"
-                          ? Text("Rent for: " + DateFormat("MMMM").format(DateTime.fromMillisecondsSinceEpoch(bill.timestamp!)))
+                          ? Text("Rent for: " +
+                              DateFormat("MMMM").format(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      bill.timestamp!)))
                           : Container()
                     ],
                   ),
                   trailing: TextButton(
-                    onPressed: (){
+                    onPressed: () {
                       setState(() {
                         bills.removeWhere((element) => element == bill);
                       });
                     },
-                    child: const Text('Remove', style: TextStyle(color: Colors.red),),
+                    child: const Text(
+                      'Remove',
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
                 ),
               );
@@ -325,12 +365,17 @@ class _AddInvoiceState extends State<AddInvoice> {
                   height: 30.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
-                    border: Border.all(
-                        color: EKodi().themeColor, width: 1.0),
+                    border: Border.all(color: EKodi.themeColor, width: 1.0),
                   ),
-                  child: Center(child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Text('Add Bill', style: TextStyle(color: EKodi().themeColor,),),
+                  child: const Center(
+                      child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      'Add Bill',
+                      style: TextStyle(
+                        color: EKodi.themeColor,
+                      ),
+                    ),
                   )),
                 ),
               ),
@@ -357,7 +402,7 @@ class _AddInvoiceState extends State<AddInvoice> {
         // border: Border.all(
         //     color: Colors.black26, width: 1.0),
       ),
-      child:  Padding(
+      child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -371,25 +416,27 @@ class _AddInvoiceState extends State<AddInvoice> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 5.0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Invoice ID", style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .apply(
-                              color: Colors.black,
-                              fontWeightDelta: 10)),
+                          Text("Invoice ID",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .apply(
+                                      color: Colors.black,
+                                      fontWeightDelta: 10)),
                           Container(
-                            width: size.width*0.2,
+                            width: size.width * 0.2,
                             height: 35.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(3.0),
                               color: Colors.grey.shade100,
-                              border: Border.all(
-                                  color: Colors.black26, width: 1.0),
+                              border:
+                                  Border.all(color: Colors.black26, width: 1.0),
                             ),
                             child: Center(child: Text(invoiceID)),
                           ),
@@ -397,18 +444,18 @@ class _AddInvoiceState extends State<AddInvoice> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                      child: Text("Bill From", style: Theme.of(context)
-                          .textTheme
-                          .titleSmall!
-                          .apply(
-                          color: Colors.black,
-                          fontWeightDelta: 10)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 5.0),
+                      child: Text("Bill From",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .apply(color: Colors.black, fontWeightDelta: 10)),
                     ),
                     InvoiceTextField(
                       controller: landlordName,
                       hintText: "Property Manager",
-                      width: size.width*0.3,
+                      width: size.width * 0.3,
                       title: "Property Manager",
                       inputType: TextInputType.name,
                       isEnd: false,
@@ -416,7 +463,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                     InvoiceTextField(
                       controller: landlordEmail,
                       hintText: "Email Address",
-                      width: size.width*0.3,
+                      width: size.width * 0.3,
                       title: "Email Address",
                       inputType: TextInputType.emailAddress,
                       isEnd: false,
@@ -428,35 +475,49 @@ class _AddInvoiceState extends State<AddInvoice> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 5.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text("Invoice Date", style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .apply(
-                              color: Colors.black,
-                              fontWeightDelta: 10)),
+                          Text("Invoice Date",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .apply(
+                                      color: Colors.black,
+                                      fontWeightDelta: 10)),
                           Container(
-                            width: size.width*0.3,
+                            width: size.width * 0.3,
                             height: 35.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(3.0),
                               color: Colors.grey.shade100,
-                              border: Border.all(
-                                  color: Colors.black26, width: 1.0),
+                              border:
+                                  Border.all(color: Colors.black26, width: 1.0),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Expanded(child: Text(DateFormat("yyyy-MM-dd").format(DateTime.fromMillisecondsSinceEpoch(startDate)), textAlign: TextAlign.right,)),
-                                const VerticalDivider(color: Colors.black26, ),
+                                Expanded(
+                                    child: Text(
+                                  DateFormat("yyyy-MM-dd").format(
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                          startDate)),
+                                  textAlign: TextAlign.right,
+                                )),
+                                const VerticalDivider(
+                                  color: Colors.black26,
+                                ),
                                 IconButton(
-                                  onPressed: () => displayCalendar(context, false),
-                                  icon: const Icon(Icons.calendar_today_rounded, color: Colors.grey,),
+                                  onPressed: () =>
+                                      displayCalendar(context, false),
+                                  icon: const Icon(
+                                    Icons.calendar_today_rounded,
+                                    color: Colors.grey,
+                                  ),
                                 )
                               ],
                             ),
@@ -465,18 +526,18 @@ class _AddInvoiceState extends State<AddInvoice> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                      child: Text("Bill To", style: Theme.of(context)
-                          .textTheme
-                          .titleSmall!
-                          .apply(
-                          color: Colors.black,
-                          fontWeightDelta: 10)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 5.0),
+                      child: Text("Bill To",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .apply(color: Colors.black, fontWeightDelta: 10)),
                     ),
                     InvoiceTextField(
                       controller: tenantName,
                       hintText: "Tenant",
-                      width: size.width*0.3,
+                      width: size.width * 0.3,
                       title: "Tenant",
                       inputType: TextInputType.name,
                       isEnd: true,
@@ -484,16 +545,17 @@ class _AddInvoiceState extends State<AddInvoice> {
                     InvoiceTextField(
                       controller: tenantEmail,
                       hintText: "Email",
-                      width: size.width*0.3,
+                      width: size.width * 0.3,
                       title: "Email Address",
                       inputType: TextInputType.emailAddress,
                       isEnd: true,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 5.0),
                       child: SizedBox(
                         height: 35.0,
-                        width: size.width*0.3,
+                        width: size.width * 0.3,
                         child: DropdownSearch<Property>(
                           mode: Mode.MENU,
                           //showSelectedItems: true,
@@ -507,21 +569,21 @@ class _AddInvoiceState extends State<AddInvoice> {
 
                             getUnits();
                           },
-
                         ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 5.0),
                       child: SizedBox(
                         height: 35.0,
-                        width: size.width*0.3,
+                        width: size.width * 0.3,
                         child: DropdownSearch<Unit>(
                           mode: Mode.MENU,
                           //showSelectedItems: true,
                           items: units,
                           hint: "Select Unit",
-                          itemAsString: (u)=> u!.name!,
+                          itemAsString: (u) => u!.name!,
                           onChanged: (v) {
                             setState(() {
                               selectedUnit = v!;
@@ -529,20 +591,17 @@ class _AddInvoiceState extends State<AddInvoice> {
                               tenantEmail.text = v.tenantInfo!["email"];
                               tenantName.text = v.tenantInfo!["name"];
                               bills.add(Bill(
-                                  timestamp: DateTime.now().millisecondsSinceEpoch,
+                                  timestamp:
+                                      DateTime.now().millisecondsSinceEpoch,
                                   billType: "Rent",
                                   details: "Payment",
                                   period: 30,
                                   paidAmount: 0,
                                   actualAmount: v.rent,
                                   balance: v.rent,
-                                  isPaid: false
-                              )
-                              );
+                                  isPaid: false));
                             });
-
                           },
-
                         ),
                       ),
                     ),
@@ -566,24 +625,33 @@ class _AddInvoiceState extends State<AddInvoice> {
                       height: 30.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5.0),
-                        border: Border.all(
-                            color: EKodi().themeColor, width: 1.0),
+                        border: Border.all(color: EKodi.themeColor, width: 1.0),
                       ),
-                      child: Center(child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Text('Cancel', style: TextStyle(color: EKodi().themeColor,),),
+                      child: const Center(
+                          child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5.0),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            color: EKodi.themeColor,
+                          ),
+                        ),
                       )),
                     ),
                   ),
-                  const SizedBox(width: 10.0,),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
                   RaisedButton(
                     elevation: 0.0,
-                    color: EKodi().themeColor,
+                    color: EKodi.themeColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    onPressed:  loading ? () {} : ()=> saveAndSendInvoice(account),
-                    child: Text(loading ? "Sending..." : "Save & Send", style: const TextStyle(color: Colors.white)),
+                    onPressed:
+                        loading ? () {} : () => saveAndSendInvoice(account),
+                    child: Text(loading ? "Sending..." : "Save & Send",
+                        style: const TextStyle(color: Colors.white)),
                   )
                 ],
               ),
@@ -610,7 +678,7 @@ class _AddInvoiceState extends State<AddInvoice> {
         // border: Border.all(
         //     color: Colors.black26, width: 1.0),
       ),
-      child:  Padding(
+      child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -622,30 +690,38 @@ class _AddInvoiceState extends State<AddInvoice> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Invoice Date", style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .apply(
-                      color: Colors.black,
-                      fontWeightDelta: 10)),
+                  Text("Invoice Date",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .apply(color: Colors.black, fontWeightDelta: 10)),
                   Container(
-                    width: size.width*0.5,
+                    width: size.width * 0.5,
                     height: 35.0,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(3.0),
                       color: Colors.grey.shade100,
-                      border: Border.all(
-                          color: Colors.black26, width: 1.0),
+                      border: Border.all(color: Colors.black26, width: 1.0),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(child: Text(DateFormat("yyyy-MM-dd").format(DateTime.fromMillisecondsSinceEpoch(startDate)), textAlign: TextAlign.right,)),
-                        const VerticalDivider(color: Colors.black26, ),
+                        Expanded(
+                            child: Text(
+                          DateFormat("yyyy-MM-dd").format(
+                              DateTime.fromMillisecondsSinceEpoch(startDate)),
+                          textAlign: TextAlign.right,
+                        )),
+                        const VerticalDivider(
+                          color: Colors.black26,
+                        ),
                         IconButton(
                           onPressed: () => displayCalendar(context, true),
-                          icon: const Icon(Icons.calendar_today_rounded, color: Colors.grey,),
+                          icon: const Icon(
+                            Icons.calendar_today_rounded,
+                            color: Colors.grey,
+                          ),
                         )
                       ],
                     ),
@@ -657,20 +733,18 @@ class _AddInvoiceState extends State<AddInvoice> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Invoice ID", style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .apply(
-                    color: Colors.black,
-                    fontWeightDelta: 10)),
+                Text("Invoice ID",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .apply(color: Colors.black, fontWeightDelta: 10)),
                 Container(
-                  width: size.width*0.4,
+                  width: size.width * 0.4,
                   height: 35.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(3.0),
                     color: Colors.grey.shade100,
-                    border: Border.all(
-                        color: Colors.black26, width: 1.0),
+                    border: Border.all(color: Colors.black26, width: 1.0),
                   ),
                   child: Center(child: Text(invoiceID)),
                 ),
@@ -681,18 +755,18 @@ class _AddInvoiceState extends State<AddInvoice> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                  child: Text("Bill From", style: Theme.of(context)
-                      .textTheme
-                      .titleSmall!
-                      .apply(
-                      color: Colors.black,
-                      fontWeightDelta: 10)),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 5.0),
+                  child: Text("Bill From",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .apply(color: Colors.black, fontWeightDelta: 10)),
                 ),
                 InvoiceTextField(
                   controller: landlordName,
                   hintText: "Property Manager",
-                  width: size.width*0.6,
+                  width: size.width * 0.6,
                   title: "Property Manager",
                   inputType: TextInputType.name,
                   isEnd: false,
@@ -700,7 +774,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                 InvoiceTextField(
                   controller: landlordEmail,
                   hintText: "Email Address",
-                  width: size.width*0.6,
+                  width: size.width * 0.6,
                   title: "Email Address",
                   inputType: TextInputType.emailAddress,
                   isEnd: false,
@@ -713,20 +787,19 @@ class _AddInvoiceState extends State<AddInvoice> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                    child: Text("Bill To", style: Theme.of(context)
-                        .textTheme
-                        .titleSmall!
-                        .apply(
-                        color: Colors.black,
-                        fontWeightDelta: 10)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 5.0),
+                    child: Text("Bill To",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .apply(color: Colors.black, fontWeightDelta: 10)),
                   ),
                   InvoiceTextField(
                     controller: tenantName,
                     hintText: "Tenant",
-                    width: size.width*0.6,
+                    width: size.width * 0.6,
                     title: "Tenant",
                     inputType: TextInputType.name,
                     isEnd: true,
@@ -734,16 +807,17 @@ class _AddInvoiceState extends State<AddInvoice> {
                   InvoiceTextField(
                     controller: tenantEmail,
                     hintText: "Email",
-                    width: size.width*0.6,
+                    width: size.width * 0.6,
                     title: "Email Address",
                     inputType: TextInputType.emailAddress,
                     isEnd: true,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 5.0),
                     child: SizedBox(
                       height: 35.0,
-                      width: size.width*0.6,
+                      width: size.width * 0.6,
                       child: DropdownSearch<Property>(
                         mode: Mode.MENU,
                         //showSelectedItems: true,
@@ -757,21 +831,21 @@ class _AddInvoiceState extends State<AddInvoice> {
 
                           getUnits();
                         },
-
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 5.0),
                     child: SizedBox(
                       height: 35.0,
-                      width: size.width*0.6,
+                      width: size.width * 0.6,
                       child: DropdownSearch<Unit>(
                         mode: Mode.MENU,
                         //showSelectedItems: true,
                         items: units,
                         hint: "Select Unit",
-                        itemAsString: (u)=> u!.name!,
+                        itemAsString: (u) => u!.name!,
                         onChanged: (v) {
                           setState(() {
                             selectedUnit = v!;
@@ -779,20 +853,17 @@ class _AddInvoiceState extends State<AddInvoice> {
                             tenantEmail.text = v.tenantInfo!["email"];
                             tenantName.text = v.tenantInfo!["name"];
                             bills.add(Bill(
-                                timestamp: DateTime.now().millisecondsSinceEpoch,
+                                timestamp:
+                                    DateTime.now().millisecondsSinceEpoch,
                                 billType: "Rent",
                                 details: "Payment",
                                 period: 30,
                                 paidAmount: 0,
                                 actualAmount: v.rent,
                                 balance: v.rent,
-                                isPaid: false
-                            )
-                            );
+                                isPaid: false));
                           });
-
                         },
-
                       ),
                     ),
                   ),
@@ -815,24 +886,33 @@ class _AddInvoiceState extends State<AddInvoice> {
                       height: 30.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5.0),
-                        border: Border.all(
-                            color: EKodi().themeColor, width: 1.0),
+                        border: Border.all(color: EKodi.themeColor, width: 1.0),
                       ),
-                      child: Center(child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Text('Cancel', style: TextStyle(color: EKodi().themeColor,),),
+                      child: const Center(
+                          child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5.0),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            color: EKodi.themeColor,
+                          ),
+                        ),
                       )),
                     ),
                   ),
-                  const SizedBox(width: 10.0,),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
                   RaisedButton(
                     elevation: 0.0,
-                    color: EKodi().themeColor,
+                    color: EKodi.themeColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    onPressed:  loading ? () {} : ()=> saveAndSendInvoice(account),
-                    child: Text(loading ? "Sending..." : "Save & Send", style: const TextStyle(color: Colors.white)),
+                    onPressed:
+                        loading ? () {} : () => saveAndSendInvoice(account),
+                    child: Text(loading ? "Sending..." : "Save & Send",
+                        style: const TextStyle(color: Colors.white)),
                   )
                 ],
               ),
@@ -851,7 +931,9 @@ class _AddInvoiceState extends State<AddInvoice> {
     return ResponsiveBuilder(
       builder: (context, sizeInfo) {
         bool isMobile = sizeInfo.isMobile || sizeInfo.isTablet;
-        return isMobile ? _buildForMobile(account, size) : _buildForDesktop(account, size);
+        return isMobile
+            ? _buildForMobile(account, size)
+            : _buildForDesktop(account, size);
       },
     );
   }

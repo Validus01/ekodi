@@ -12,6 +12,8 @@ class Account {
   final String? photoUrl;
   final List<dynamic>? deviceTokens;
   final bool? verified;
+  final Map<String, dynamic>? verification;
+  final int? timestamp;
 
   Account(
       {this.name,
@@ -22,6 +24,8 @@ class Account {
       this.phone,
       this.idNumber,
       this.verified,
+      this.verification,
+      this.timestamp,
       this.accountType});
 
   Map<String, dynamic> toMap() {
@@ -35,33 +39,39 @@ class Account {
       "photoUrl": photoUrl,
       "deviceTokens": deviceTokens,
       "verified": verified,
+      "verification": verification,
+      "timestamp": timestamp,
     };
   }
 
   factory Account.fromDocument(DocumentSnapshot doc) {
     return Account(
-      userID: doc.id,
-      name: doc.get("name") ?? "",
-      email: doc.get("email") ?? "",
-      phone: doc.get("phone") ?? "",
-      idNumber: doc.get("idNumber") ?? "",
-      accountType: doc.get("accountType") ?? "",
-      photoUrl: doc.get("photoUrl") ?? "",
-      deviceTokens: doc.get("deviceTokens") ?? [],
-      verified: doc.get("verified") ?? false,
-    );
+        userID: doc.id,
+        name: doc.get("name") ?? "",
+        email: doc.get("email") ?? "",
+        phone: doc.get("phone") ?? "",
+        idNumber: doc.get("idNumber") ?? "",
+        accountType: doc.get("accountType") ?? "",
+        photoUrl: doc.get("photoUrl") ?? "",
+        deviceTokens: doc.get("deviceTokens") ?? [],
+        verified: doc.get("verified") ?? false,
+        timestamp:
+            doc.get("timestamp") ?? DateTime.now().millisecondsSinceEpoch,
+        verification: doc.get("verification") ?? {});
   }
 
   factory Account.fromJson(Map<String, dynamic> doc) {
     return Account(
-        userID: doc["userID"],
-        name: doc["name"],
-        email: doc["email"],
-        phone: doc["phone"],
-        idNumber: doc["idNumber"],
-        accountType: doc["accountType"],
-        photoUrl: doc["photoUrl"],
-        verified: doc["verified"],
+        userID: doc["userID"] ?? "",
+        name: doc["name"] ?? "",
+        email: doc["email"] ?? "",
+        phone: doc["phone"] ?? "",
+        idNumber: doc["idNumber"] ?? "",
+        accountType: doc["accountType"] ?? "",
+        photoUrl: doc["photoUrl"] ?? "",
+        verified: doc["verified"] ?? false,
+        verification: doc["verification"] ?? {},
+        timestamp: doc["timestamp"] ?? DateTime.now().millisecondsSinceEpoch,
         deviceTokens: doc["deviceTokens"] ?? []);
   }
 

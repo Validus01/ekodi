@@ -95,6 +95,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
+  bool isDevelopment = true;
 
   @override
   void initState() {
@@ -107,7 +108,24 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () async {
       auth.authStateChanges().listen((User? user) async {
         if (user == null) {
-          CustomRoutes.router.navigateTo(context, "/home");
+          // For development
+          if (isDevelopment) {
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc("DD4rbG8SCmaloVvs3UPkMtk3f5l2")
+                .get()
+                .then((value) {
+              Account account = Account.fromDocument(value);
+
+              //print(account.toMap());
+
+              context.read<EKodi>().switchUser(account);
+            });
+
+            CustomRoutes.router.navigateTo(context, "/dashboard");
+          } else {
+            CustomRoutes.router.navigateTo(context, "/home");
+          }
         } else {
           final user = FirebaseAuth.instance.currentUser;
 
@@ -120,6 +138,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
             context.read<EKodi>().switchUser(account);
           });
+
+          //print(user.uid);
 
           CustomRoutes.router.navigateTo(context, "/dashboard");
         }

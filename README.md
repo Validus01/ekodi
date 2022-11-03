@@ -1,4 +1,4 @@
-# rekodi
+# e-KODI
 
 Property Management Software
 

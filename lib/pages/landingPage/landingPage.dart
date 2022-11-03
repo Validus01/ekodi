@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rekodi/pages/landingPage/widgets/footer.dart';
+import 'package:rekodi/pages/landingPage/widgets/homeProperties.dart';
 import 'package:rekodi/pages/landingPage/widgets/intro.dart';
+import 'package:rekodi/pages/landingPage/widgets/ratings.dart';
 import 'package:rekodi/pages/landingPage/widgets/welcome.dart';
 
 class LandingPage extends StatefulWidget {
@@ -27,7 +29,13 @@ class _LandingPageState extends State<LandingPage> {
         child: SingleChildScrollView(
           controller: _controller,
           child: Column(
-            children: const [Intro(), Welcome(), Footer()],
+            children: const [
+              Intro(),
+              Welcome(),
+              HomeProperties(),
+              Ratings(),
+              Footer()
+            ],
           ),
         ),
       ),

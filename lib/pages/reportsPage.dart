@@ -195,7 +195,7 @@ class _ReportsState extends State<Reports> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                color: EKodi().themeColor,
+                color: EKodi.themeColor,
                 child: const Text(
                   "Close",
                   style: TextStyle(color: Colors.white),
@@ -275,9 +275,9 @@ class _ReportsState extends State<Reports> {
                         IconButton(
                             onPressed: () => _downloadPdf(
                                 report.url!), //todo: change to view
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.cloud_download_outlined,
-                              color: EKodi().themeColor,
+                              color: EKodi.themeColor,
                             )),
                       ],
                     ),
@@ -341,9 +341,9 @@ class ReportCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.insert_chart_outlined,
-                    color: EKodi().themeColor,
+                    color: EKodi.themeColor,
                   ),
                   const SizedBox(
                     width: 5.0,
@@ -361,21 +361,21 @@ class ReportCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(),
+                  const SizedBox(),
                   InkWell(
                     onTap: onTap,
                     child: Container(
                       height: 30.0,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(3.0),
-                          border: Border.all(
-                              color: EKodi().themeColor, width: 1.0)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          border:
+                              Border.all(color: EKodi.themeColor, width: 1.0)),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: Center(
                             child: Text(
                           "View",
-                          style: TextStyle(color: EKodi().themeColor),
+                          style: TextStyle(color: EKodi.themeColor),
                         )),
                       ),
                     ),

@@ -1,12 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:rekodi/commonFunctions/fileManager.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/account.dart';
 import 'package:rekodi/pages/landingPage/widgets/staticAppbar.dart';
@@ -58,14 +60,24 @@ class _AuthPageState extends State<AuthPage> {
       String res = "";
 
       if (isSignUp) {
-        res = await Authentication().createUserWithPhoneWeb(context,
-            name: name.text.trim(),
-            idNumber: idNumber.text.trim(),
-            email: email.text.trim(),
-            password: password.text.trim(),
-            phone: phone.text.trim(),
-            accountType: accountType,
-            pickedFile: pickedFile);
+        await FirebaseFirestore.instance
+            .collection("users")
+            .where("idNumber", isEqualTo: idNumber.text.trim())
+            .get()
+            .then((value) async {
+          if (value.docs.isEmpty) {
+            res = await Authentication().createUserWithPhoneWeb(context,
+                name: name.text.trim(),
+                idNumber: idNumber.text.trim(),
+                email: email.text.trim(),
+                password: password.text.trim(),
+                phone: phone.text.trim(),
+                accountType: accountType,
+                pickedFile: pickedFile);
+          } else {
+            res = "User Already Exists!";
+          }
+        });
       } else {
         res = await Authentication()
             .loginUserWithPhoneWeb(context, phone: phone.text.trim());
@@ -215,23 +227,37 @@ class _AuthPageState extends State<AuthPage> {
   //   }
   // }
 
-  Future pickImageFromCamera() async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera, preferredCameraDevice: CameraDevice.front);
+  Future pickImageFromCamera(BuildContext context) async {
+    final XFile? photo = await FileManager().pickPhoto(
+      context: context,
+      imageSource: ImageSource.camera,
+      cameraDevice: CameraDevice.rear,
+    );
 
     setState(() {
       pickedFile = photo;
     });
   }
 
-  displayPickedFile() async {
+  Widget displayPickedFile() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(50.0),
-      child: Image.memory(
-        await pickedFile!.readAsBytes(),
-        height: 100.0,
-        width: 100.0,
-        fit: BoxFit.cover,
-      ),
+      child: kIsWeb
+          ? Image.network(
+              pickedFile!.path,
+              height: 100.0,
+              width: 100.0,
+              fit: BoxFit.cover,
+              errorBuilder: (context, obj, stacktrace) {
+                return Text("Error");
+              },
+            )
+          : Image.file(
+              File(pickedFile!.path),
+              height: 100.0,
+              width: 100.0,
+              fit: BoxFit.cover,
+            ),
     );
   }
 
@@ -306,7 +332,7 @@ class _AuthPageState extends State<AuthPage> {
                                                   ? displayPickedFile()
                                                   : CircleAvatar(
                                                       radius: 50.0,
-                                                      backgroundColor: EKodi()
+                                                      backgroundColor: EKodi
                                                           .themeColor
                                                           .withOpacity(0.1),
                                                       child: ClipRRect(
@@ -337,7 +363,8 @@ class _AuthPageState extends State<AuthPage> {
                                                       hoverColor:
                                                           Colors.transparent,
                                                       onPressed: () =>
-                                                          pickImageFromCamera(),
+                                                          pickImageFromCamera(
+                                                              context),
                                                       icon: const Icon(
                                                         Icons.edit,
                                                         color: Colors.grey,

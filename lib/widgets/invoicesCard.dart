@@ -16,7 +16,7 @@ class InvoicesCard extends StatelessWidget {
     int startDate = context.watch<DatePeriodProvider>().startDate;
     int endDate = context.watch<DatePeriodProvider>().endDate;
 
-    String period = ((endDate - startDate)/8.64e+7).round().toString();
+    String period = ((endDate - startDate) / 8.64e+7).round().toString();
 
     return ResponsiveBuilder(
       builder: (context, sizeInfo) {
@@ -25,12 +25,10 @@ class InvoicesCard extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.symmetric(
               vertical: isMobile ? 5.0 : 10.0,
-            horizontal: isMobile ? 10.0 : 0.0
-          ),
+              horizontal: isMobile ? 10.0 : 0.0),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius:
-                BorderRadius.circular(3.0),
+                borderRadius: BorderRadius.circular(3.0),
                 color: Colors.white,
                 boxShadow: const [
                   BoxShadow(
@@ -39,23 +37,17 @@ class InvoicesCard extends StatelessWidget {
                       spreadRadius: 1.0,
                       offset: Offset(0.0, 0.0))
                 ],
-                border: Border.all(
-                    width: 0.5,
-                    color:
-                    Colors.grey.shade300)),
+                border: Border.all(width: 0.5, color: Colors.grey.shade300)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
                   padding: EdgeInsets.all(15.0),
                   child: ListTile(
-                    contentPadding:
-                    EdgeInsets.zero,
+                    contentPadding: EdgeInsets.zero,
                     title: Text(
                       "Last $period days",
-                      style: const TextStyle(
-                          fontWeight:
-                          FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     trailing: const Icon(
                       Icons.more_horiz,
@@ -64,30 +56,20 @@ class InvoicesCard extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets
-                      .symmetric(
-                      horizontal: 15.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment
-                        .spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
-                        mainAxisSize:
-                        MainAxisSize.min,
-                        crossAxisAlignment:
-                        CrossAxisAlignment
-                            .start,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
                             "Kes 0",
                             style: TextStyle(
                                 fontSize: 18.0,
-                                color:
-                                Colors.teal,
-                                fontWeight:
-                                FontWeight
-                                    .bold),
+                                color: Colors.teal,
+                                fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
                             height: 5.0,
@@ -96,30 +78,21 @@ class InvoicesCard extends StatelessWidget {
                             "paid invoices",
                             style: TextStyle(
                                 fontSize: 15.0,
-                                color:
-                                Colors.grey,
-                                fontWeight:
-                                FontWeight
-                                    .bold),
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                       Column(
-                        mainAxisSize:
-                        MainAxisSize.min,
-                        crossAxisAlignment:
-                        CrossAxisAlignment
-                            .start,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
                             "Kes 0",
                             style: TextStyle(
                                 fontSize: 18.0,
-                                color:
-                                Colors.red,
-                                fontWeight:
-                                FontWeight
-                                    .bold),
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
                             height: 5.0,
@@ -128,11 +101,8 @@ class InvoicesCard extends StatelessWidget {
                             "open invoices",
                             style: TextStyle(
                                 fontSize: 15.0,
-                                color:
-                                Colors.grey,
-                                fontWeight:
-                                FontWeight
-                                    .bold),
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -140,31 +110,25 @@ class InvoicesCard extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(
-                      15.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment
-                        .spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       RaisedButton.icon(
                         elevation: 0.0,
-                        hoverColor:
-                        Colors.transparent,
-                        color: EKodi().themeColor.withOpacity(0.1),
-                        icon: Icon(
+                        hoverColor: Colors.transparent,
+                        color: EKodi.themeColor.withOpacity(0.1),
+                        icon: const Icon(
                           Icons.paid_outlined,
-                          color:
-                          EKodi().themeColor,
+                          color: EKodi.themeColor,
                         ),
-                        label: Text(
-                            "Receive Payments",
+                        label: const Text("Receive Payments",
                             style: TextStyle(
-                                color: EKodi().themeColor,
-                                fontWeight:
-                                FontWeight
-                                    .bold)),
-                        onPressed: () {context.read<TabProvider>().changeTab("Accounting");},
+                                color: EKodi.themeColor,
+                                fontWeight: FontWeight.bold)),
+                        onPressed: () {
+                          context.read<TabProvider>().changeTab("Accounting");
+                        },
                       ),
                       // Text("View All",
                       //     style: TextStyle(

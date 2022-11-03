@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -65,7 +66,7 @@ class CustomDashDrawer extends StatelessWidget {
     bool isTenant = account.accountType == "Tenant";
 
     return Drawer(
-      backgroundColor: EKodi().themeColor,
+      backgroundColor: EKodi.themeColor,
       elevation: 0.0,
       child: Stack(
         children: [
@@ -118,14 +119,14 @@ class CustomDashDrawer extends StatelessWidget {
                         leading: Icon(
                           Icons.dashboard,
                           color: currentTab == "Dashboard"
-                              ? EKodi().themeColor
+                              ? EKodi.themeColor
                               : Colors.white,
                         ),
                         title: Text(
                           "Dashboard",
                           style: TextStyle(
                             color: currentTab == "Dashboard"
-                                ? EKodi().themeColor
+                                ? EKodi.themeColor
                                 : Colors.white,
                           ),
                         ),
@@ -152,14 +153,14 @@ class CustomDashDrawer extends StatelessWidget {
                         leading: Icon(
                           Icons.paid_outlined,
                           color: currentTab == "Accounting"
-                              ? EKodi().themeColor
+                              ? EKodi.themeColor
                               : Colors.white,
                         ),
                         title: Text(
                           "Accounting",
                           style: TextStyle(
                             color: currentTab == "Accounting"
-                                ? EKodi().themeColor
+                                ? EKodi.themeColor
                                 : Colors.white,
                           ),
                         ),
@@ -188,14 +189,14 @@ class CustomDashDrawer extends StatelessWidget {
                               leading: Icon(
                                 Icons.receipt_long_outlined,
                                 color: currentTab == "Invoice"
-                                    ? EKodi().themeColor
+                                    ? EKodi.themeColor
                                     : Colors.white,
                               ),
                               title: Text(
                                 "Invoices",
                                 style: TextStyle(
                                   color: currentTab == "Invoice"
-                                      ? EKodi().themeColor
+                                      ? EKodi.themeColor
                                       : Colors.white,
                                 ),
                               ),
@@ -223,14 +224,14 @@ class CustomDashDrawer extends StatelessWidget {
                               leading: Icon(
                                 Icons.receipt_long_outlined,
                                 color: currentTab == "Reports"
-                                    ? EKodi().themeColor
+                                    ? EKodi.themeColor
                                     : Colors.white,
                               ),
                               title: Text(
                                 "Reports",
                                 style: TextStyle(
                                   color: currentTab == "Reports"
-                                      ? EKodi().themeColor
+                                      ? EKodi.themeColor
                                       : Colors.white,
                                 ),
                               ),
@@ -258,14 +259,14 @@ class CustomDashDrawer extends StatelessWidget {
                         leading: Icon(
                           Icons.question_answer_outlined,
                           color: currentTab == "Messages"
-                              ? EKodi().themeColor
+                              ? EKodi.themeColor
                               : Colors.white,
                         ),
                         title: Text(
                           "Messages",
                           style: TextStyle(
                             color: currentTab == "Messages"
-                                ? EKodi().themeColor
+                                ? EKodi.themeColor
                                 : Colors.white,
                           ),
                         ),
@@ -293,14 +294,14 @@ class CustomDashDrawer extends StatelessWidget {
                         leading: Icon(
                           Icons.check_box_outlined,
                           color: currentTab == "Tasks"
-                              ? EKodi().themeColor
+                              ? EKodi.themeColor
                               : Colors.white,
                         ),
                         title: Text(
                           "Tasks",
                           style: TextStyle(
                             color: currentTab == "Tasks"
-                                ? EKodi().themeColor
+                                ? EKodi.themeColor
                                 : Colors.white,
                           ),
                         ),
@@ -328,14 +329,14 @@ class CustomDashDrawer extends StatelessWidget {
                         leading: Icon(
                           Icons.person,
                           color: currentTab == "Profile"
-                              ? EKodi().themeColor
+                              ? EKodi.themeColor
                               : Colors.white,
                         ),
                         title: Text(
                           "Account",
                           style: TextStyle(
                             color: currentTab == "Profile"
-                                ? EKodi().themeColor
+                                ? EKodi.themeColor
                                 : Colors.white,
                           ),
                         ),
@@ -377,14 +378,24 @@ class CustomDashDrawer extends StatelessWidget {
                 ),
                 // RaisedButton(
                 //   onPressed: () {
-                //     FirebaseFirestore.instance.collection("mymail").add({
-                //       "to": ['briannamutali586@gmail.com'],
-                //       "message": {
-                //         "subject": 'Hello from Firebase!',
-                //         "text": 'This is the plaintext section of the email body.',
-                //         "html": 'This is the <code>HTML</code> section of the email body.',
-                //       }
+                //     FirebaseFirestore.instance
+                //         .collection("users")
+                //         .get()
+                //         .then((querySnapshot) {
+                //       querySnapshot.docs.forEach((element) {
+                //         element.reference.set({
+                //           "timestamp": DateTime.now().millisecondsSinceEpoch,
+                //         });
+                //       });
                 //     });
+                //     // FirebaseFirestore.instance.collection("mymail").add({
+                //     //   "to": ['briannamutali586@gmail.com'],
+                //     //   "message": {
+                //     //     "subject": 'Hello from Firebase!',
+                //     //     "text": 'This is the plaintext section of the email body.',
+                //     //     "html": 'This is the <code>HTML</code> section of the email body.',
+                //     //   }
+                //     // });
                 //   },
                 // )
               ],

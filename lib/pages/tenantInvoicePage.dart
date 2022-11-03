@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -19,11 +18,10 @@ class TenantInvoicePage extends StatefulWidget {
 }
 
 class _TenantInvoicePageState extends State<TenantInvoicePage> {
-
   Future<void> _downloadPdf(String url) async {
-    try{
+    try {
       await launch(url);
-    } catch(e) {
+    } catch (e) {
       Fluttertoast.showToast(msg: "Failed to download");
     }
   }
@@ -38,8 +36,7 @@ class _TenantInvoicePageState extends State<TenantInvoicePage> {
             content: SizedBox(
               height: size.height * 0.9,
               width: size.width * 0.6,
-              child: SfPdfViewer.network(
-                  invoice.pdfUrl!,
+              child: SfPdfViewer.network(invoice.pdfUrl!,
                   pageLayoutMode: PdfPageLayoutMode.single),
             ),
             actions: [
@@ -47,13 +44,15 @@ class _TenantInvoicePageState extends State<TenantInvoicePage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                color: EKodi().themeColor,
-                child: const Text("Close", style: TextStyle(color: Colors.white),),
+                color: EKodi.themeColor,
+                child: const Text(
+                  "Close",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
             ],
           );
-        }
-    );
+        });
   }
 
   @override
@@ -69,9 +68,16 @@ class _TenantInvoicePageState extends State<TenantInvoicePage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 10.0,),
-            Text("Invoices", style: Theme.of(context).textTheme.headlineSmall,),
-            const SizedBox(height: 10.0,),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              "Invoices",
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
             //show recent invoices
             Container(
               width: size.width,
@@ -92,25 +98,31 @@ class _TenantInvoicePageState extends State<TenantInvoicePage> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Recent Invoices", style: Theme.of(context).textTheme.titleMedium,),
-                    Divider(color: Colors.grey.shade300,),
+                    Text(
+                      "Recent Invoices",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Divider(
+                      color: Colors.grey.shade300,
+                    ),
                     FutureBuilder<QuerySnapshot>(
-                      future: FirebaseFirestore.instance.collection("users")
-                          .doc(account.userID).collection("invoices").orderBy("timestamp", descending: true).get(),
+                      future: FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(account.userID)
+                          .collection("invoices")
+                          .orderBy("timestamp", descending: true)
+                          .get(),
                       builder: (context, snapshot) {
-                        if(!snapshot.hasData)
-                        {
+                        if (!snapshot.hasData) {
                           return const Text("Loading...");
-                        }
-                        else {
+                        } else {
                           List<Invoice> invoices = [];
 
                           for (var element in snapshot.data!.docs) {
                             invoices.add(Invoice.fromDocument(element));
                           }
 
-                          if(invoices.isEmpty)
-                          {
+                          if (invoices.isEmpty) {
                             return Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -129,46 +141,69 @@ class _TenantInvoicePageState extends State<TenantInvoicePage> {
                                 ),
                               ),
                             );
-                          }
-                          else {
+                          } else {
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: List.generate(invoices.length, (index) {
                                 Invoice invoice = invoices[index];
 
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5.0),
                                   child: Card(
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0)
-                                    ),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: ListTile(
-                                            leading: Image.asset("assets/pdf.png", width: 50.0, height: 50.0, fit: BoxFit.contain,),
-                                            title: Text(invoice.invoiceID!.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.w700),),
-                                            subtitle: Text(DateFormat("HH:mm, dd MMM").format(DateTime.fromMillisecondsSinceEpoch(invoice.timestamp!))),
+                                            leading: Image.asset(
+                                              "assets/pdf.png",
+                                              width: 50.0,
+                                              height: 50.0,
+                                              fit: BoxFit.contain,
+                                            ),
+                                            title: Text(
+                                              invoice.invoiceID!.toUpperCase(),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                            subtitle: Text(DateFormat(
+                                                    "HH:mm, dd MMM")
+                                                .format(DateTime
+                                                    .fromMillisecondsSinceEpoch(
+                                                        invoice.timestamp!))),
                                             trailing: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 TextButton(
-                                                  onPressed: ()=> viewPdf(invoice, size),
-                                                  child: const Text("View",),
+                                                  onPressed: () =>
+                                                      viewPdf(invoice, size),
+                                                  child: const Text(
+                                                    "View",
+                                                  ),
                                                 ),
                                                 IconButton(
-                                                    onPressed:()=> _downloadPdf(invoice.pdfUrl!),//todo: change to view
-                                                    icon: Icon(Icons.cloud_download_outlined, color: EKodi().themeColor,)
-                                                ),
+                                                    onPressed: () =>
+                                                        _downloadPdf(invoice
+                                                            .pdfUrl!), //todo: change to view
+                                                    icon: const Icon(
+                                                      Icons
+                                                          .cloud_download_outlined,
+                                                      color: EKodi.themeColor,
+                                                    )),
                                               ],
                                             ),
                                           ),
                                         ),
                                         ListTile(
-                                          title: Text("From: ${invoice.senderInfo!["name"]}"),
-                                          subtitle: Text("To: ${invoice.receiverInfo!["name"]}"),
+                                          title: Text(
+                                              "From: ${invoice.senderInfo!["name"]}"),
+                                          subtitle: Text(
+                                              "To: ${invoice.receiverInfo!["name"]}"),
                                         )
                                       ],
                                     ),
@@ -184,7 +219,9 @@ class _TenantInvoicePageState extends State<TenantInvoicePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 10.0,),
+            const SizedBox(
+              height: 10.0,
+            ),
           ],
         ),
       ),

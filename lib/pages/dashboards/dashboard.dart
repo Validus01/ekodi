@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/APIs/locationAPI.dart';
+import 'package:rekodi/admin/admin.dart';
 import 'package:rekodi/config.dart';
 import 'package:rekodi/model/locationInfo.dart';
 import 'package:rekodi/pages/dashboards/landlordDash.dart';
@@ -111,6 +112,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     String? accountType = context.watch<EKodi>().account.accountType!;
+    //print(context.watch<EKodi>().account.userID);
 
     switch (accountType) {
       case "Landlord":
@@ -141,6 +143,8 @@ class _DashboardState extends State<Dashboard> {
           desktop: (BuildContext context) => const ServiceDash(),
           watch: (BuildContext context) => Container(color: Colors.purple),
         );
+      case "ADMIN":
+        return const Admin();
       default:
         return const TenantDash();
     }

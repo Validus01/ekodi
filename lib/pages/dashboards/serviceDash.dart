@@ -245,6 +245,7 @@ class _ServiceDashState extends State<ServiceDash> {
                       ratings: [],
                       timestamp: DateTime.now().millisecondsSinceEpoch,
                       category: _category.text.trim(),
+                      previewUrl: "",
                     );
 
                     Navigator.of(context).pop(provider);

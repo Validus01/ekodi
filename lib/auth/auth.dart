@@ -100,7 +100,14 @@ class Authentication {
             phone: _phone.text.trim(),
             idNumber: "",
             accountType: "",
+            timestamp: DateTime.now().millisecondsSinceEpoch,
             photoUrl: userCredential.user!.photoURL ?? "",
+            verified: false,
+            verification: {
+              "verified": false,
+              "status": "unverified",
+              "timestamp": DateTime.now().millisecondsSinceEpoch
+            },
             deviceTokens: [],
           );
 
@@ -294,7 +301,14 @@ class Authentication {
           phone: phone!,
           idNumber: idNumber,
           accountType: accountType!,
+          timestamp: DateTime.now().millisecondsSinceEpoch,
           photoUrl: credential.user!.photoURL ?? "",
+          verified: false,
+          verification: {
+            "verified": false,
+            "status": "unverified",
+            "timestamp": DateTime.now().millisecondsSinceEpoch
+          },
           deviceTokens: []);
 
       String res = await saveUserInfoToFirestore(account);
@@ -341,15 +355,25 @@ class Authentication {
             await auth.signInWithCredential(credential);
 
         if (isSignUp) {
-          result = await createUserWithPhoneNative(context,
-              name: name,
-              idNumber: idNumber,
-              email: email,
-              password: password,
-              phone: phone,
-              accountType: accountType,
-              pickedFile: pickedFile,
-              userCredential: userCredential);
+          await FirebaseFirestore.instance
+              .collection("users")
+              .where("idNumber", isEqualTo: idNumber)
+              .get()
+              .then((value) async {
+            if (value.docs.isEmpty) {
+              result = await createUserWithPhoneNative(context,
+                  name: name,
+                  idNumber: idNumber,
+                  email: email,
+                  password: password,
+                  phone: phone,
+                  accountType: accountType,
+                  pickedFile: pickedFile,
+                  userCredential: userCredential);
+            } else {
+              result = "User Already Exists!";
+            }
+          });
         } else {
           result = "success+${userCredential.user!.uid}";
         }
@@ -379,15 +403,25 @@ class Authentication {
               await auth.signInWithCredential(credential);
 
           if (isSignUp) {
-            result = await createUserWithPhoneNative(context,
-                name: name,
-                idNumber: idNumber,
-                email: email,
-                password: password,
-                phone: phone,
-                accountType: accountType,
-                pickedFile: pickedFile,
-                userCredential: userCredential);
+            await FirebaseFirestore.instance
+                .collection("users")
+                .where("idNumber", isEqualTo: idNumber)
+                .get()
+                .then((value) async {
+              if (value.docs.isEmpty) {
+                result = await createUserWithPhoneNative(context,
+                    name: name,
+                    idNumber: idNumber,
+                    email: email,
+                    password: password,
+                    phone: phone,
+                    accountType: accountType,
+                    pickedFile: pickedFile,
+                    userCredential: userCredential);
+              } else {
+                result = "User Aready Exists!";
+              }
+            });
           } else {
             result = "success+${userCredential.user!.uid}";
           }
@@ -435,6 +469,12 @@ class Authentication {
         accountType: accountType,
         photoUrl: photoURL,
         verified: false,
+        timestamp: DateTime.now().millisecondsSinceEpoch,
+        verification: {
+          "verified": false,
+          "status": "unverified",
+          "timestamp": DateTime.now().millisecondsSinceEpoch
+        },
         deviceTokens: []);
 
     String result = await Authentication().saveUserInfoToFirestore(account);
@@ -492,6 +532,13 @@ class Authentication {
           idNumber: idNumber,
           accountType: accountType,
           photoUrl: photoURL,
+          verified: false,
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+          verification: {
+            "verified": false,
+            "status": "unverified",
+            "timestamp": DateTime.now().millisecondsSinceEpoch
+          },
           deviceTokens: []);
 
       String res = await Authentication().saveUserInfoToFirestore(account);

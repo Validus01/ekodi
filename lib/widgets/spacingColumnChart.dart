@@ -6,7 +6,6 @@ import '../config.dart';
 import '../model/account.dart';
 import '../providers/transactionProvider.dart';
 
-
 class SpacingColumnChart extends StatefulWidget {
   const SpacingColumnChart({Key? key}) : super(key: key);
 
@@ -32,8 +31,6 @@ class _SpacingColumnChartState extends State<SpacingColumnChart> {
     Account account = Provider.of<EKodi>(context, listen: false).account;
 
     TransactionProvider().getGroupedLandlordTransactions(account);
-
-
   }
 
   //Get the cartesian chart widget
@@ -59,19 +56,20 @@ class _SpacingColumnChartState extends State<SpacingColumnChart> {
   }
 
   //Get the column series
-  List<ColumnSeries<ChatData, dynamic>> _getDefaultColumn(List<ChatData> transactions) {
+  List<ColumnSeries<ChatData, dynamic>> _getDefaultColumn(
+      List<ChatData> transactions) {
     return <ColumnSeries<ChatData, String>>[
       ColumnSeries<ChatData, String>(
 
-        /// To apply the column width here.
+          /// To apply the column width here.
           width: _columnWidth,
 
           /// To apply the spacing betweeen to two columns here.
           spacing: _columnSpacing,
           dataSource: transactions,
-          color: EKodi().themeColor,
+          color: EKodi.themeColor,
           xValueMapper: (ChatData data, _) => data.month,
-          yValueMapper: (ChatData data, _) => data.incomeAmount!/1000,
+          yValueMapper: (ChatData data, _) => data.incomeAmount! / 1000,
           name: 'Income'),
       ColumnSeries<ChatData, String>(
           dataSource: transactions,
@@ -79,11 +77,10 @@ class _SpacingColumnChartState extends State<SpacingColumnChart> {
           spacing: _columnSpacing,
           color: Colors.orange,
           xValueMapper: (ChatData data, _) => data.month,
-          yValueMapper: (ChatData data, _) => data.expenseAmount!/1000,
+          yValueMapper: (ChatData data, _) => data.expenseAmount! / 1000,
           name: 'Expense'),
     ];
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,15 +89,10 @@ class _SpacingColumnChartState extends State<SpacingColumnChart> {
     return FutureBuilder<List<ChatData>>(
       future: TransactionProvider().getGroupedLandlordTransactions(account),
       builder: (context, snapshot) {
-        if(!snapshot.hasData)
-        {
+        if (!snapshot.hasData) {
           return const Text("Loading...");
-        }
-        else
-        {
+        } else {
           List<ChatData> transactions = snapshot.data!;
-
-
 
           return _buildSpacingColumnChart(transactions);
         }

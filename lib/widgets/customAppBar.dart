@@ -14,9 +14,14 @@ class DashboardAppBar extends StatelessWidget {
   final Widget? addPropertyButton;
   final bool? automaticallyImplyLeading;
 
-  const DashboardAppBar({Key? key, this.addPropertyButton, this.automaticallyImplyLeading,}) : super(key: key);
+  const DashboardAppBar({
+    Key? key,
+    this.addPropertyButton,
+    this.automaticallyImplyLeading,
+  }) : super(key: key);
 
-  Widget displayUserProfile(BuildContext context, Account account, bool isMobile) {
+  Widget displayUserProfile(
+      BuildContext context, Account account, bool isMobile) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -24,17 +29,17 @@ class DashboardAppBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(18.0),
           child: account.photoUrl! == ""
               ? Image.asset(
-            "assets/profile.png",
-            height: 36.0,
-            width: 36.0,
-            fit: BoxFit.cover,
-          )
+                  "assets/profile.png",
+                  height: 36.0,
+                  width: 36.0,
+                  fit: BoxFit.cover,
+                )
               : Image.network(
-            account.photoUrl!,
-            height: 36.0,
-            width: 36.0,
-            fit: BoxFit.cover,
-          ),
+                  account.photoUrl!,
+                  height: 36.0,
+                  width: 36.0,
+                  fit: BoxFit.cover,
+                ),
         ),
         const SizedBox(
           width: 10.0,
@@ -50,7 +55,9 @@ class DashboardAppBar extends StatelessWidget {
               Text(
                 account.name!,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: isMobile ? Colors.white : Colors.black, fontSize: 13.0),
+                style: TextStyle(
+                    color: isMobile ? Colors.white : Colors.black,
+                    fontSize: 13.0),
               ),
               Text(
                 account.accountType!,
@@ -75,7 +82,7 @@ class DashboardAppBar extends StatelessWidget {
               // //Go to settings page
               //   break;
               case "Logout":
-              //Logout user
+                //Logout user
                 await FirebaseAuth.instance.signOut();
 
                 Route route = MaterialPageRoute(
@@ -97,7 +104,6 @@ class DashboardAppBar extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     Account account = context.watch<EKodi>().account;
@@ -106,7 +112,7 @@ class DashboardAppBar extends StatelessWidget {
 
     return ResponsiveBuilder(
       builder: (context, sizeInfo) {
-        bool isMobile = sizeInfo.isMobile || sizeInfo.isTablet ;
+        bool isMobile = sizeInfo.isMobile || sizeInfo.isTablet;
 
         return AppBar(
           backgroundColor: isMobile ? Colors.black : Colors.white,
@@ -114,79 +120,84 @@ class DashboardAppBar extends StatelessWidget {
           //elevation: 0.0,
           title: Row(
             children: [
-              isMobile ? RichText(
-                text: TextSpan(
-                  //style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: 'e-',
-                        style: GoogleFonts.titanOne(
-                            color: Colors.blue, fontSize: 20.0)),
-                    TextSpan(
-                        text: 'KODI',
-                        style: GoogleFonts.titanOne(
-                            color: Colors.red, fontSize: 20.0)),
-                  ],
-                ),
-              ) : Container(),
+              isMobile
+                  ? Text("JVALUE",
+                      style: GoogleFonts.titanOne(
+                          color: Colors.pink, fontSize: 20.0))
+                  : Container(),
               const SizedBox(
                 width: 10.0,
               ),
               const VerticalDivider(
                 color: Colors.grey,
               ),
-              !isMobile ? Icon(
-                Icons.phone,
-                color: Colors.blueAccent.shade700,
-                size: 15.0,
-              ) : Container(),
+              !isMobile
+                  ? Icon(
+                      Icons.phone,
+                      color: Colors.blueAccent.shade700,
+                      size: 15.0,
+                    )
+                  : Container(),
               const SizedBox(
                 width: 10.0,
               ),
-              if (!isMobile) InkWell(
-                onTap: () => launch("tel:+254701518100"),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "+254701518100",
-                      style: TextStyle(color: Colors.black, fontSize: 13.0),
-                    ),
-                    Text(
-                      "Help & Support",
-                      style: TextStyle(color: Colors.grey, fontSize: 11.0),
-                    ),
-                  ],
-                ),
-              ) else Container()
+              if (!isMobile)
+                InkWell(
+                  onTap: () => launch("tel:${EKodi.contactPhone}"),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        EKodi.contactPhone,
+                        style: TextStyle(color: Colors.black, fontSize: 13.0),
+                      ),
+                      Text(
+                        "Help & Support",
+                        style: TextStyle(color: Colors.grey, fontSize: 11.0),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Container()
             ],
           ),
           actions: [
             addPropertyButton!,
-            isMobile ? Container() : IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications_active_rounded,
-                color: Colors.grey,
-              ),
-            ),
+            isMobile
+                ? Container()
+                : IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.notifications_active_rounded,
+                      color: Colors.grey,
+                    ),
+                  ),
             const SizedBox(
               width: 10.0,
             ),
-            isMobile ? Container() : IconButton(
-              onPressed: () {
-                context.read<TabProvider>().changeTab("Messages");
-              },
-              icon: Icon(
-                Icons.question_answer_outlined,
-                color: currentTab == 'Messages' ? isMobile ? Colors.white : EKodi().themeColor : Colors.grey,
-              ),
-            ),
+            isMobile
+                ? Container()
+                : IconButton(
+                    onPressed: () {
+                      context.read<TabProvider>().changeTab("Messages");
+                    },
+                    icon: Icon(
+                      Icons.question_answer_outlined,
+                      color: currentTab == 'Messages'
+                          ? isMobile
+                              ? Colors.white
+                              : EKodi.themeColor
+                          : Colors.grey,
+                    ),
+                  ),
             const SizedBox(
               width: 10.0,
             ),
-            isMobile ? Container() : displayUserProfile(context, account, isMobile),
+            isMobile
+                ? Container()
+                : displayUserProfile(context, account, isMobile),
             const SizedBox(
               width: 20.0,
             ),

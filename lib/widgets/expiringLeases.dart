@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/model/leaseExpiryModel.dart';
-import 'package:rekodi/model/property.dart';
-import 'package:rekodi/model/unit.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -18,7 +16,6 @@ class ExpiringLeases extends StatefulWidget {
 }
 
 class _ExpiringLeasesState extends State<ExpiringLeases> {
-
   bool loading = false;
 
   Widget _buildNoDataCircle(Size size, bool isMobile) {
@@ -95,10 +92,10 @@ class _ExpiringLeasesState extends State<ExpiringLeases> {
 
         return Padding(
           padding: EdgeInsets.only(
-              right: isMobile ? 10 : 15.0,
-              left: isMobile ? 10 : 5.0,
-              top: isMobile? 5.0 : 0.0,
-            bottom:  isMobile ? 5.0 : 0.0,
+            right: isMobile ? 10 : 15.0,
+            left: isMobile ? 10 : 5.0,
+            top: isMobile ? 5.0 : 0.0,
+            bottom: isMobile ? 5.0 : 0.0,
           ),
           child: Container(
             width: size.width,
@@ -112,51 +109,56 @@ class _ExpiringLeasesState extends State<ExpiringLeases> {
                       spreadRadius: 1.0,
                       offset: Offset(0.0, 0.0))
                 ],
-                border: Border.all(
-                    width: 0.5, color: Colors.grey.shade300)),
-            child: loading ? Text('Loading...') : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const ListTile(
-                  title: Text(
-                    'Expiring Leases',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                border: Border.all(width: 0.5, color: Colors.grey.shade300)),
+            child: loading
+                ? Text('Loading...')
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const ListTile(
+                        title: Text(
+                          'Expiring Leases',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      FutureBuilder<QuerySnapshot>(
+                        future: FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(account.userID)
+                            .collection("leaseExpiry")
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Text("Loading...");
+                          } else {
+                            List<LeaseExpiry> expiringLeases = [];
+
+                            for (var element in snapshot.data!.docs) {
+                              expiringLeases
+                                  .add(LeaseExpiry.fromDocument(element));
+                            }
+
+                            if (expiringLeases.isEmpty) {
+                              return _buildNoDataCircle(size, isMobile);
+                            } else {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: List.generate(expiringLeases.length,
+                                    (index) {
+                                  LeaseExpiry leaseExpiry =
+                                      expiringLeases[index];
+
+                                  return LeaseProperty(
+                                    leaseExpiry: leaseExpiry,
+                                  );
+                                }),
+                              );
+                            }
+                          }
+                        },
+                      )
+                    ],
                   ),
-                ),
-                FutureBuilder<QuerySnapshot>(
-                  future: FirebaseFirestore.instance.collection("users").doc(account.userID).collection("leaseExpiry").get(),
-                  builder: (context, snapshot) {
-                    if(!snapshot.hasData)
-                    {
-                      return const Text("Loading...");
-                    }
-                    else {
-                      List<LeaseExpiry> expiringLeases = [];
-
-                      for (var element in snapshot.data!.docs) {
-                        expiringLeases.add(LeaseExpiry.fromDocument(element));
-                      }
-
-                      if(expiringLeases.isEmpty)
-                      {
-                        return _buildNoDataCircle(size, isMobile);
-                      }
-                      else
-                      {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(expiringLeases.length, (index) {
-                            LeaseExpiry leaseExpiry = expiringLeases[index];
-
-                            return LeaseProperty(leaseExpiry: leaseExpiry,);
-                          }),
-                        );
-                      }
-                    }
-                  },
-                )
-              ],
-            ),
           ),
         );
       },
@@ -178,7 +180,8 @@ class _LeasePropertyState extends State<LeaseProperty> {
   /// Returns the progress bar.
   Widget _buildProgressBar(BuildContext context, int startDate, int dueDate) {
     final Brightness _brightness = Theme.of(context).brightness;
-    double remainingDays = (dueDate - DateTime.now().millisecondsSinceEpoch).toDouble();
+    double remainingDays =
+        (dueDate - DateTime.now().millisecondsSinceEpoch).toDouble();
 
     return Stack(children: <Widget>[
       Padding(
@@ -211,7 +214,7 @@ class _LeasePropertyState extends State<LeaseProperty> {
                               value: remainingDays,
                               thickness: 30,
                               edgeStyle: LinearEdgeStyle.bothCurve,
-                              color: EKodi().themeColor),
+                              color: EKodi.themeColor),
                         ],
                       ))))),
       Align(
@@ -219,7 +222,7 @@ class _LeasePropertyState extends State<LeaseProperty> {
           child: Padding(
               padding: const EdgeInsets.all(30),
               child: Text(
-                (remainingDays/8.64e+7).round().toString() + ' days left',
+                (remainingDays / 8.64e+7).round().toString() + ' days left',
                 style: const TextStyle(fontSize: 14, color: Color(0xffFFFFFF)),
               ))),
     ]);
@@ -228,43 +231,61 @@ class _LeasePropertyState extends State<LeaseProperty> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    bool isExpired = DateTime.now().millisecondsSinceEpoch >= widget.leaseExpiry!.expiryDate!;
+    bool isExpired = DateTime.now().millisecondsSinceEpoch >=
+        widget.leaseExpiry!.expiryDate!;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ListTile(
           title: Text(widget.leaseExpiry!.propertyInfo!["name"]),
-          subtitle: Text(widget.leaseExpiry!.propertyInfo!["address"]+", "
-              +widget.leaseExpiry!.propertyInfo!["city"]+" "
-              +widget.leaseExpiry!.propertyInfo!["country"]),
-          trailing: showUnits ? IconButton(
-            onPressed: () {
-              setState(() {
-                showUnits = false;
-              });
-            },
-            icon: const Icon(Icons.arrow_drop_up),
-          ) : IconButton(
-            onPressed: () {
-              setState(() {
-                showUnits = true;
-              });
-            },
-            icon: const Icon(Icons.arrow_drop_down),
-          ),
+          subtitle: Text(widget.leaseExpiry!.propertyInfo!["address"] +
+              ", " +
+              widget.leaseExpiry!.propertyInfo!["city"] +
+              " " +
+              widget.leaseExpiry!.propertyInfo!["country"]),
+          trailing: showUnits
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      showUnits = false;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_up),
+                )
+              : IconButton(
+                  onPressed: () {
+                    setState(() {
+                      showUnits = true;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_down),
+                ),
         ),
-        showUnits ? AnimatedContainer(
-          duration: const Duration(seconds: 1),
-          width: size.width,
-          child: ListTile(
-            title: Text(widget.leaseExpiry!.unitInfo!["name"]+": "+widget.leaseExpiry!.userInfo!["name"]),
-            subtitle: isExpired ? const Text("EXPIRED", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),) : _buildProgressBar(context, widget.leaseExpiry!.timestamp!, widget.leaseExpiry!.expiryDate!),
-            trailing: Text("Kes ${widget.leaseExpiry!.unitInfo!["rent"]}"),
-          ),
-        ) : Container()
+        showUnits
+            ? AnimatedContainer(
+                duration: const Duration(seconds: 1),
+                width: size.width,
+                child: ListTile(
+                  title: Text(widget.leaseExpiry!.unitInfo!["name"] +
+                      ": " +
+                      widget.leaseExpiry!.userInfo!["name"]),
+                  subtitle: isExpired
+                      ? const Text(
+                          "EXPIRED",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.red),
+                        )
+                      : _buildProgressBar(
+                          context,
+                          widget.leaseExpiry!.timestamp!,
+                          widget.leaseExpiry!.expiryDate!),
+                  trailing:
+                      Text("Kes ${widget.leaseExpiry!.unitInfo!["rent"]}"),
+                ),
+              )
+            : Container()
       ],
     );
   }
 }
-

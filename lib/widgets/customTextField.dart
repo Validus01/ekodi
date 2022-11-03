@@ -102,7 +102,15 @@ class InvoiceTextField extends StatefulWidget {
   final TextInputType? inputType;
   final bool? isEnd;
 
-  const InvoiceTextField({Key? key, this.controller, this.hintText, this.width, this.title, this.inputType, this.isEnd}) : super(key: key);
+  const InvoiceTextField(
+      {Key? key,
+      this.controller,
+      this.hintText,
+      this.width,
+      this.title,
+      this.inputType,
+      this.isEnd})
+      : super(key: key);
 
   @override
   State<InvoiceTextField> createState() => _InvoiceTextFieldState();
@@ -120,10 +128,18 @@ class _InvoiceTextFieldState extends State<InvoiceTextField> {
         height: 60.0,
         child: Column(
           //mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: widget.isEnd! ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment:
+              widget.isEnd! ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            Text(widget.title!, style: const TextStyle(fontSize: 15.0,),),
-            const SizedBox(height: 5.0,),
+            Text(
+              widget.title!,
+              style: const TextStyle(
+                fontSize: 15.0,
+              ),
+            ),
+            const SizedBox(
+              height: 5.0,
+            ),
             Container(
               height: 35.0,
               width: widget.width,
@@ -131,7 +147,9 @@ class _InvoiceTextFieldState extends State<InvoiceTextField> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(5.0),
                 border: Border.all(
-                  color: isSelected ? Theme.of(context).primaryColor : Colors.grey.shade300,
+                  color: isSelected
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey.shade300,
                   width: 1.0,
                 ),
               ),
@@ -164,7 +182,6 @@ class _InvoiceTextFieldState extends State<InvoiceTextField> {
     );
   }
 }
-
 
 // class MyTextField extends StatefulWidget {
 //   final TextEditingController? controller;
@@ -257,8 +274,6 @@ class _InvoiceTextFieldState extends State<InvoiceTextField> {
 //   }
 // }
 
-
-
 class AuthTextField extends StatelessWidget {
   final TextEditingController? controller;
   final Widget? prefixIcon;
@@ -267,17 +282,24 @@ class AuthTextField extends StatelessWidget {
   final TextInputType? inputType;
   final Widget? suffixIcon;
 
-  const AuthTextField({Key? key, this.controller, this.prefixIcon, this.hintText, this.isObscure, this.inputType, this.suffixIcon}) : super(key: key);
+  const AuthTextField(
+      {Key? key,
+      this.controller,
+      this.prefixIcon,
+      this.hintText,
+      this.isObscure,
+      this.inputType,
+      this.suffixIcon})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container
-      (
+    return Container(
       //height: 20.0,
       decoration: const BoxDecoration(
-        // color: Colors.grey.withOpacity(0.3),
-        // borderRadius: BorderRadius.circular(30.0),
-      ),
+          // color: Colors.grey.withOpacity(0.3),
+          // borderRadius: BorderRadius.circular(30.0),
+          ),
       padding: const EdgeInsets.all(8.0),
       // margin: const EdgeInsets.all(10.0),
       child: TextFormField(
@@ -290,8 +312,7 @@ class AuthTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(
                 width: 1.0,
-              )
-          ),
+              )),
           prefixIcon: prefixIcon,
           suffixIconConstraints: const BoxConstraints(
             minWidth: 2,
@@ -307,7 +328,6 @@ class AuthTextField extends StatelessWidget {
     );
   }
 }
-
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -334,9 +354,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
             border: Border.all(
-              color: isSelected
-                  ? EKodi().themeColor
-                  : Colors.transparent,
+              color: isSelected ? EKodi.themeColor : Colors.transparent,
             )),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5.0),

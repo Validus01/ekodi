@@ -33,7 +33,7 @@ class TenantDash extends StatefulWidget {
 
 class _TenantDashState extends State<TenantDash> {
   _TenantDashState();
-  
+
   Widget dashboard(Account account, Size size, int startDate, int endDate) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,8 +53,8 @@ class _TenantDashState extends State<TenantDash> {
                 children: const [
                   Text(
                     "Dashboard",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20.0),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   ),
                   DateSelector()
                 ],
@@ -66,13 +66,13 @@ class _TenantDashState extends State<TenantDash> {
                     borderRadius: BorderRadius.circular(35.0),
                     child: account.photoUrl! == ""
                         ? Image.asset(
-                      "assets/profile.png",
-                      height: 70.0,
-                      width: 70.0,
-                      fit: BoxFit.cover,
-                    )
+                            "assets/profile.png",
+                            height: 70.0,
+                            width: 70.0,
+                            fit: BoxFit.cover,
+                          )
                         : Image.network(account.photoUrl!,
-                        height: 70.0, width: 70.0, fit: BoxFit.cover),
+                            height: 70.0, width: 70.0, fit: BoxFit.cover),
                   ),
                   Expanded(
                     child: ListTile(
@@ -82,8 +82,7 @@ class _TenantDashState extends State<TenantDash> {
                           children: <TextSpan>[
                             TextSpan(
                                 text: 'Hi, ',
-                                style:
-                                GoogleFonts.baloo2(fontSize: 20.0)),
+                                style: GoogleFonts.baloo2(fontSize: 20.0)),
                             TextSpan(
                                 text: account.name,
                                 style: GoogleFonts.baloo2(
@@ -97,14 +96,14 @@ class _TenantDashState extends State<TenantDash> {
                       trailing: RaisedButton.icon(
                         elevation: 0.0,
                         hoverColor: Colors.transparent,
-                        color: EKodi().themeColor.withOpacity(0.3),
-                        icon: Icon(
+                        color: EKodi.themeColor.withOpacity(0.3),
+                        icon: const Icon(
                           Icons.cloud_download_outlined,
-                          color: EKodi().themeColor,
+                          color: EKodi.themeColor,
                         ),
-                        label: Text("Download Report",
+                        label: const Text("Download Report",
                             style: TextStyle(
-                                color: EKodi().themeColor,
+                                color: EKodi.themeColor,
                                 fontWeight: FontWeight.bold)),
                         onPressed: () {},
                       ),
@@ -116,10 +115,7 @@ class _TenantDashState extends State<TenantDash> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Expanded(
-                    flex: 1,
-                    child: RecentTransactionsCard()
-                  ),
+                  Expanded(flex: 1, child: RecentTransactionsCard()),
                   Expanded(
                     flex: 1,
                     child: SliderWithCircle(),
@@ -129,7 +125,11 @@ class _TenantDashState extends State<TenantDash> {
             ],
           ),
         ),
-        const VerticalDivider(color: Colors.black26, thickness: 1.0, width: 1.0,),
+        const VerticalDivider(
+          color: Colors.black26,
+          thickness: 1.0,
+          width: 1.0,
+        ),
         Expanded(
           flex: 3,
           child: SingleChildScrollView(
@@ -192,8 +192,7 @@ class _TenantDashState extends State<TenantDash> {
                       List<ServiceProvider> providers = [];
 
                       snapshot.data!.docs.forEach((element) {
-                        providers
-                            .add(ServiceProvider.fromDocument(element));
+                        providers.add(ServiceProvider.fromDocument(element));
                       });
 
                       if (providers.isEmpty) {
@@ -202,7 +201,11 @@ class _TenantDashState extends State<TenantDash> {
                             children: [
                               Opacity(
                                 opacity: 0.5,
-                                child: Image.asset('assets/images/services_left_image.png', width: size.width*0.1, fit: BoxFit.contain,),
+                                child: Image.asset(
+                                  'assets/images/services_left_image.png',
+                                  width: size.width * 0.1,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                               const SizedBox(
                                 height: 10.0,
@@ -230,20 +233,18 @@ class _TenantDashState extends State<TenantDash> {
                                 child: Card(
                                   child: ListTile(
                                     leading: ClipRRect(
-                                      borderRadius:
-                                      BorderRadius.circular(15.0),
+                                      borderRadius: BorderRadius.circular(15.0),
                                       child: provider.photoUrl! == ""
                                           ? Image.asset(
-                                        "assets/profile.png",
-                                        height: 30.0,
-                                        width: 30.0,
-                                        fit: BoxFit.cover,
-                                      )
-                                          : Image.network(
-                                          provider.photoUrl!,
-                                          height: 30.0,
-                                          width: 30.0,
-                                          fit: BoxFit.cover),
+                                              "assets/profile.png",
+                                              height: 30.0,
+                                              width: 30.0,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.network(provider.photoUrl!,
+                                              height: 30.0,
+                                              width: 30.0,
+                                              fit: BoxFit.cover),
                                     ),
                                     title: Text(
                                       provider.title!,
@@ -258,7 +259,7 @@ class _TenantDashState extends State<TenantDash> {
                                     trailing: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         const Icon(
                                           Icons.star_rate_outlined,
@@ -285,7 +286,8 @@ class _TenantDashState extends State<TenantDash> {
     );
   }
 
-  Widget displayTab(Account account, String currentTab, Size size, int startDate, int endDate) {
+  Widget displayTab(Account account, String currentTab, Size size,
+      int startDate, int endDate) {
     switch (currentTab) {
       case "Dashboard":
         return dashboard(account, size, startDate, endDate);
@@ -293,15 +295,22 @@ class _TenantDashState extends State<TenantDash> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20.0,),
+            const SizedBox(
+              height: 20.0,
+            ),
             TextButton.icon(
               onPressed: () {
                 context.read<TabProvider>().changeTab("Dashboard");
               },
-              icon: const Icon(Icons.arrow_back_rounded, color: Colors.grey,),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.grey,
+              ),
               label: const Text("Back", style: TextStyle(color: Colors.grey)),
             ),
-            const SizedBox(height: 20.0,),
+            const SizedBox(
+              height: 20.0,
+            ),
             // const Text(
             //   "Messages",
             //   style: TextStyle(
@@ -315,15 +324,22 @@ class _TenantDashState extends State<TenantDash> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20.0,),
+            const SizedBox(
+              height: 20.0,
+            ),
             TextButton.icon(
               onPressed: () {
                 context.read<TabProvider>().changeTab("Dashboard");
               },
-              icon: const Icon(Icons.arrow_back_rounded, color: Colors.grey,),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.grey,
+              ),
               label: const Text("Back", style: TextStyle(color: Colors.grey)),
             ),
-            const SizedBox(height: 20.0,),
+            const SizedBox(
+              height: 20.0,
+            ),
             // const Text(
             //   "Profile",
             //   style: TextStyle(
@@ -337,52 +353,62 @@ class _TenantDashState extends State<TenantDash> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20.0,),
+            const SizedBox(
+              height: 20.0,
+            ),
             TextButton.icon(
               onPressed: () {
                 context.read<TabProvider>().changeTab("Dashboard");
               },
-              icon: const Icon(Icons.arrow_back_rounded, color: Colors.grey,),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.grey,
+              ),
               label: const Text("Back", style: TextStyle(color: Colors.grey)),
             ),
-            const SizedBox(height: 20.0,),
+            const SizedBox(
+              height: 20.0,
+            ),
             const Text(
               "Accounting",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 20.0),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
             ),
-            const SizedBox(height: 20.0,),
+            const SizedBox(
+              height: 20.0,
+            ),
             Container(
-                width: size.width,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3.0),
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 1,
-                          spreadRadius: 1.0,
-                          offset: Offset(0.0, 0.0))
-                    ],
-                    border: Border.all(width: 0.5, color: Colors.grey.shade300)),
+              width: size.width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3.0),
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 1,
+                        spreadRadius: 1.0,
+                        offset: Offset(0.0, 0.0))
+                  ],
+                  border: Border.all(width: 0.5, color: Colors.grey.shade300)),
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection("users").doc(account.userID)
-                    .collection("transactions").orderBy("timestamp", descending: true).snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(account.userID)
+                    .collection("transactions")
+                    .orderBy("timestamp", descending: true)
+                    .snapshots(),
                 builder: (context, snapshot) {
-                  if(!snapshot.hasData)
-                  {
+                  if (!snapshot.hasData) {
                     return const Text("Loading...");
-                  }
-                  else
-                  {
+                  } else {
                     List<account_transaction.Transaction> transactions = [];
 
                     snapshot.data!.docs.forEach((element) {
-                      transactions.add(account_transaction.Transaction.fromDocument(element));
+                      transactions.add(
+                          account_transaction.Transaction.fromDocument(
+                              element));
                     });
 
-                    if(transactions.isEmpty)
-                    {
+                    if (transactions.isEmpty) {
                       return Center(
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
@@ -401,22 +427,27 @@ class _TenantDashState extends State<TenantDash> {
                           ),
                         ),
                       );
-                    }
-                    else
-                    {
+                    } else {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: List.generate(transactions.length, (index) {
-                          account_transaction.Transaction transaction = transactions[index];
+                          account_transaction.Transaction transaction =
+                              transactions[index];
 
                           return ListTile(
-                            title: Text("Payment By: "+transaction.senderInfo!["name"]!, style: const TextStyle(fontWeight: FontWeight.bold),),
+                            title: Text(
+                              "Payment By: " + transaction.senderInfo!["name"]!,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             subtitle: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(transaction.transactionType!),
-                                Divider(color: Colors.grey.shade300,)
+                                Divider(
+                                  color: Colors.grey.shade300,
+                                )
                               ],
                             ),
                             trailing: Text("Kes ${transaction.paidAmount!}"),
@@ -492,10 +523,12 @@ class _TenantDashState extends State<TenantDash> {
                   right: 0.0,
                   top: 0.0,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: size.width * 0.02),
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
-                      child: displayTab(account, currentTab, size, startDate, endDate),
+                      child: displayTab(
+                          account, currentTab, size, startDate, endDate),
                     ),
                   ),
                 ),
@@ -508,7 +541,6 @@ class _TenantDashState extends State<TenantDash> {
   }
 }
 
-
 class TenantDashMobile extends StatefulWidget {
   const TenantDashMobile({Key? key}) : super(key: key);
 
@@ -517,7 +549,6 @@ class TenantDashMobile extends StatefulWidget {
 }
 
 class _TenantDashMobileState extends State<TenantDashMobile> {
-
   _displayTabs(Account account, bool isChatOpen, String currentTab, Size size) {
     switch (currentTab) {
       case "Dashboard":
@@ -528,7 +559,8 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -549,13 +581,13 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                     borderRadius: BorderRadius.circular(35.0),
                     child: account.photoUrl! == ""
                         ? Image.asset(
-                      "assets/profile.png",
-                      height: 70.0,
-                      width: 70.0,
-                      fit: BoxFit.cover,
-                    )
+                            "assets/profile.png",
+                            height: 70.0,
+                            width: 70.0,
+                            fit: BoxFit.cover,
+                          )
                         : Image.network(account.photoUrl!,
-                        height: 70.0, width: 70.0, fit: BoxFit.cover),
+                            height: 70.0, width: 70.0, fit: BoxFit.cover),
                   ),
                   Expanded(
                     child: Padding(
@@ -567,8 +599,8 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                             children: <TextSpan>[
                               TextSpan(
                                   text: 'Hi, ',
-                                  style:
-                                  GoogleFonts.baloo2(fontSize: 20.0, color: Colors.black)),
+                                  style: GoogleFonts.baloo2(
+                                      fontSize: 20.0, color: Colors.black)),
                               TextSpan(
                                   text: account.name,
                                   style: GoogleFonts.baloo2(
@@ -581,9 +613,9 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                         subtitle: const Text(
                             "Welcome to e-KODI! Here's your activity."),
                         trailing: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.cloud_download_outlined,
-                            color: EKodi().themeColor,
+                            color: EKodi.themeColor,
                           ),
                           onPressed: () {},
                         ),
@@ -654,8 +686,7 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                         List<ServiceProvider> providers = [];
 
                         for (var element in snapshot.data!.docs) {
-                          providers
-                              .add(ServiceProvider.fromDocument(element));
+                          providers.add(ServiceProvider.fromDocument(element));
                         }
 
                         if (providers.isEmpty) {
@@ -664,7 +695,11 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                               children: [
                                 Opacity(
                                   opacity: 0.5,
-                                  child: Image.asset('assets/images/services_left_image.png', width: size.width*0.6, fit: BoxFit.contain,),
+                                  child: Image.asset(
+                                    'assets/images/services_left_image.png',
+                                    width: size.width * 0.6,
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 10.0,
@@ -693,19 +728,18 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                                     child: ListTile(
                                       leading: ClipRRect(
                                         borderRadius:
-                                        BorderRadius.circular(15.0),
+                                            BorderRadius.circular(15.0),
                                         child: provider.photoUrl! == ""
                                             ? Image.asset(
-                                          "assets/profile.png",
-                                          height: 30.0,
-                                          width: 30.0,
-                                          fit: BoxFit.cover,
-                                        )
-                                            : Image.network(
-                                            provider.photoUrl!,
-                                            height: 30.0,
-                                            width: 30.0,
-                                            fit: BoxFit.cover),
+                                                "assets/profile.png",
+                                                height: 30.0,
+                                                width: 30.0,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.network(provider.photoUrl!,
+                                                height: 30.0,
+                                                width: 30.0,
+                                                fit: BoxFit.cover),
                                       ),
                                       title: Text(
                                         provider.title!,
@@ -720,7 +754,7 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                                       trailing: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.star_rate_outlined,
@@ -752,13 +786,16 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20.0,),
+                const SizedBox(
+                  height: 20.0,
+                ),
                 const Text(
                   "Accounting",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20.0),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                 ),
-                const SizedBox(height: 20.0,),
+                const SizedBox(
+                  height: 20.0,
+                ),
                 Container(
                   width: size.width,
                   decoration: BoxDecoration(
@@ -771,25 +808,28 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                             spreadRadius: 1.0,
                             offset: Offset(0.0, 0.0))
                       ],
-                      border: Border.all(width: 0.5, color: Colors.grey.shade300)),
+                      border:
+                          Border.all(width: 0.5, color: Colors.grey.shade300)),
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection("users").doc(account.userID)
-                        .collection("transactions").orderBy("timestamp", descending: true).snapshots(),
+                    stream: FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(account.userID)
+                        .collection("transactions")
+                        .orderBy("timestamp", descending: true)
+                        .snapshots(),
                     builder: (context, snapshot) {
-                      if(!snapshot.hasData)
-                      {
+                      if (!snapshot.hasData) {
                         return const Text("Loading...");
-                      }
-                      else
-                      {
+                      } else {
                         List<account_transaction.Transaction> transactions = [];
 
                         snapshot.data!.docs.forEach((element) {
-                          transactions.add(account_transaction.Transaction.fromDocument(element));
+                          transactions.add(
+                              account_transaction.Transaction.fromDocument(
+                                  element));
                         });
 
-                        if(transactions.isEmpty)
-                        {
+                        if (transactions.isEmpty) {
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
@@ -808,25 +848,33 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
                               ),
                             ),
                           );
-                        }
-                        else
-                        {
+                        } else {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
-                            children: List.generate(transactions.length, (index) {
-                              account_transaction.Transaction transaction = transactions[index];
+                            children:
+                                List.generate(transactions.length, (index) {
+                              account_transaction.Transaction transaction =
+                                  transactions[index];
 
                               return ListTile(
-                                title: Text("Payment By: "+transaction.senderInfo!["name"]!, style: const TextStyle(fontWeight: FontWeight.bold),),
+                                title: Text(
+                                  "Payment By: " +
+                                      transaction.senderInfo!["name"]!,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
                                 subtitle: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(transaction.transactionType!),
-                                    Divider(color: Colors.grey.shade300,)
+                                    Divider(
+                                      color: Colors.grey.shade300,
+                                    )
                                   ],
                                 ),
-                                trailing: Text("Kes ${transaction.paidAmount!}"),
+                                trailing:
+                                    Text("Kes ${transaction.paidAmount!}"),
                               );
                             }),
                           );
@@ -904,4 +952,3 @@ class _TenantDashMobileState extends State<TenantDashMobile> {
     );
   }
 }
-

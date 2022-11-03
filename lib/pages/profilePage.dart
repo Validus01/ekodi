@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rekodi/main.dart';
 import 'package:rekodi/model/account.dart';
@@ -28,7 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController idNumber = TextEditingController();
   String accountType = '';
   bool updating = false;
-  PlatformFile? pickedFile;
+  XFile? pickedFile;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -55,8 +58,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (pickedFile != null) {
       //upload image to storage
-      String downloadUrl = "";
-          //==================================================await FileManager().uploadProfilePhoto(account.userID!, pickedFile!);
+      String downloadUrl =
+          await FileManager().uploadProfilePhoto(account.userID!, pickedFile!);
 
       Account newAccount = Account(
           name: name.text.trim(),
@@ -66,6 +69,9 @@ class _ProfilePageState extends State<ProfilePage> {
           phone: phone.text.trim(),
           idNumber: idNumber.text.trim(),
           accountType: accountType,
+          timestamp: account.timestamp,
+          verified: account.verified,
+          verification: account.verification,
           deviceTokens: account.deviceTokens);
 
       await FirebaseFirestore.instance
@@ -83,11 +89,14 @@ class _ProfilePageState extends State<ProfilePage> {
       Account newAccount = Account(
           name: name.text.trim(),
           userID: account.userID,
-          photoUrl: '',
+          photoUrl: account.photoUrl,
           email: email.text.trim(),
           phone: phone.text.trim(),
           idNumber: idNumber.text.trim(),
           accountType: accountType,
+          timestamp: account.timestamp,
+          verified: account.verified,
+          verification: account.verification,
           deviceTokens: account.deviceTokens);
 
       await FirebaseFirestore.instance
@@ -104,17 +113,26 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Future pickImageFromGallery() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
+  // Future pickImageFromGallery() async {
+  //   FilePickerResult? result =
+  //       await FilePicker.platform.pickFiles(type: FileType.image);
 
-    if (result != null) {
-      setState(() {
-        pickedFile = result.files.first;
-      });
-    } else {
-      // User canceled the picker
-    }
+  //   if (result != null) {
+  //     setState(() {
+  //       pickedFile = result.files.first;
+  //     });
+  //   } else {
+  //     // User canceled the picker
+  //   }
+  // }
+
+  Future pickImageFromCamera() async {
+    final XFile? photo = await _picker.pickImage(
+        source: ImageSource.camera, preferredCameraDevice: CameraDevice.front);
+
+    setState(() {
+      pickedFile = photo;
+    });
   }
 
   Widget displayUserProfile(
@@ -183,14 +201,17 @@ class _ProfilePageState extends State<ProfilePage> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18.0),
       child: kIsWeb
-          ? Image.memory(
-              pickedFile!.bytes!,
+          ? Image.network(
+              pickedFile!.path,
               height: 36.0,
               width: 36.0,
               fit: BoxFit.cover,
+              errorBuilder: (context, obj, stacktrace) {
+                return Text("Error");
+              },
             )
-          : Image.memory(
-              pickedFile!.bytes!,
+          : Image.file(
+              File(pickedFile!.path),
               height: 36.0,
               width: 36.0,
               fit: BoxFit.cover,
@@ -328,7 +349,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         title: RaisedButton.icon(
                           elevation: 0.0,
                           hoverColor: Colors.transparent,
-                          color: EKodi().themeColor,
+                          color: EKodi.themeColor,
                           icon: const Icon(
                             Icons.cloud_upload_outlined,
                             color: Colors.white,
@@ -337,7 +358,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
-                          onPressed: () => pickImageFromGallery(),
+                          onPressed: () => pickImageFromCamera(),
                         ),
                       ),
                       CustomTextField(
@@ -399,7 +420,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       RaisedButton.icon(
                         elevation: 0.0,
                         hoverColor: Colors.transparent,
-                        color: EKodi().themeColor,
+                        color: EKodi.themeColor,
                         icon: Icon(
                           Icons.check,
                           color: updating ? Colors.white30 : Colors.white,
@@ -578,7 +599,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             title: RaisedButton.icon(
                               elevation: 0.0,
                               hoverColor: Colors.transparent,
-                              color: EKodi().themeColor,
+                              color: EKodi.themeColor,
                               icon: const Icon(
                                 Icons.cloud_upload_outlined,
                                 color: Colors.white,
@@ -587,7 +608,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold)),
-                              onPressed: pickImageFromGallery,
+                              onPressed: () => pickImageFromCamera(),
                             ),
                           ),
                           CustomTextField(
@@ -649,7 +670,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           RaisedButton.icon(
                             elevation: 0.0,
                             hoverColor: Colors.transparent,
-                            color: EKodi().themeColor,
+                            color: EKodi.themeColor,
                             icon: Icon(
                               Icons.check,
                               color: updating ? Colors.white30 : Colors.white,

@@ -10,7 +10,6 @@ import '../config.dart';
 import '../model/account.dart';
 import '../providers/datePeriod.dart';
 
-
 class RevenueOverview extends StatefulWidget {
   const RevenueOverview({Key? key}) : super(key: key);
 
@@ -19,7 +18,6 @@ class RevenueOverview extends StatefulWidget {
 }
 
 class _RevenueOverviewState extends State<RevenueOverview> {
-
   bool loading = false;
   int expenses = 0;
   int income = 0;
@@ -35,23 +33,19 @@ class _RevenueOverviewState extends State<RevenueOverview> {
       loading = true;
     });
 
-    Account account = Provider
-        .of<EKodi>(context, listen: false)
-        .account;
+    Account account = Provider.of<EKodi>(context, listen: false).account;
 
     await TransactionProvider().updateTransactionsDB(account);
 
-    List<account_transaction.Transaction> transactions = await TransactionProvider().getAllTransactions(account);
+    List<account_transaction.Transaction> transactions =
+        await TransactionProvider().getAllTransactions(account);
 
     transactions.forEach((element) {
-      if(element.paymentCategory == "Rent")
-        {
-          income = income + element.paidAmount!;
-        }
-      else
-        {
-          expenses = expenses + element.paidAmount!;
-        }
+      if (element.paymentCategory == "Rent") {
+        income = income + element.paidAmount!;
+      } else {
+        expenses = expenses + element.paidAmount!;
+      }
     });
 
     setState(() {
@@ -59,9 +53,7 @@ class _RevenueOverviewState extends State<RevenueOverview> {
     });
   }
 
-
   Widget _buildForMobile(Size size, int startDate, int endDate) {
-
     String start = DateFormat("dd MMM yyyy")
         .format(DateTime.fromMillisecondsSinceEpoch(startDate));
 
@@ -69,8 +61,7 @@ class _RevenueOverviewState extends State<RevenueOverview> {
         .format(DateTime.fromMillisecondsSinceEpoch(endDate));
 
     return Padding(
-      padding:
-      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
         width: size.width,
         decoration: BoxDecoration(
@@ -89,8 +80,7 @@ class _RevenueOverviewState extends State<RevenueOverview> {
             ListTile(
                 title: const Text(
                   "Property Revenue Overview",
-                  style: TextStyle(
-                      fontSize: 15.0, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                 ),
                 subtitle: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -106,9 +96,9 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                 ),
                 trailing: IconButton(
                   onPressed: () {},
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.cloud_download_outlined,
-                    color: EKodi().themeColor,
+                    color: EKodi.themeColor,
                   ),
                 )),
             SizedBox(
@@ -126,15 +116,14 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                           height: 30.0,
                           decoration: const BoxDecoration(
                             border: Border(
-                              bottom: BorderSide(
-                                  width: 2.0, color: Colors.black),
+                              bottom:
+                                  BorderSide(width: 2.0, color: Colors.black),
                             ),
                           ),
                           child: const Text(
                             "Overview",
                             style: TextStyle(
-                                fontSize: 13.0,
-                                fontWeight: FontWeight.bold),
+                                fontSize: 13.0, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -155,8 +144,7 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                         Text(
                           "Month",
                           style: TextStyle(
-                              fontSize: 13.0,
-                              fontWeight: FontWeight.bold),
+                              fontSize: 13.0, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
                           width: 5.0,
@@ -190,8 +178,7 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                     width: size.width * 0.45,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5.0),
-                        border: Border.all(
-                            color: Colors.grey, width: 0.5)),
+                        border: Border.all(color: Colors.grey, width: 0.5)),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
@@ -200,9 +187,9 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                         children: [
                           Text(
                             "Kes $income",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 18.0,
-                                color: EKodi().themeColor,
+                                color: EKodi.themeColor,
                                 fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(
@@ -210,20 +197,20 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
+                            children: const [
+                              Text(
                                 "Money in",
                                 style: TextStyle(
                                     fontSize: 11.0,
                                     color: Colors.grey,
                                     fontWeight: FontWeight.bold),
                               ),
-                              const SizedBox(
+                              SizedBox(
                                 width: 5.0,
                               ),
                               Icon(
                                 Icons.trending_up_rounded,
-                                color: EKodi().themeColor,
+                                color: EKodi.themeColor,
                               ),
                               // Text(
                               //   "5.8%",
@@ -246,8 +233,7 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                     width: size.width * 0.45,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5.0),
-                        border: Border.all(
-                            color: Colors.grey, width: 0.5)),
+                        border: Border.all(color: Colors.grey, width: 0.5)),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
@@ -297,7 +283,6 @@ class _RevenueOverviewState extends State<RevenueOverview> {
   }
 
   Widget _buildForDesktop(Size size, int startDate, int endDate) {
-
     String start = DateFormat("dd MMM yyyy")
         .format(DateTime.fromMillisecondsSinceEpoch(startDate));
 
@@ -327,15 +312,15 @@ class _RevenueOverviewState extends State<RevenueOverview> {
             trailing: RaisedButton.icon(
               elevation: 0.0,
               hoverColor: Colors.transparent,
-              color: EKodi().themeColor.withOpacity(0.1),
+              color: EKodi.themeColor.withOpacity(0.1),
               highlightElevation: 0.0,
-              icon: Icon(
+              icon: const Icon(
                 Icons.cloud_download_outlined,
-                color: EKodi().themeColor,
+                color: EKodi.themeColor,
               ),
-              label: Text("Download Report",
+              label: const Text("Download Report",
                   style: TextStyle(
-                      color: EKodi().themeColor, fontWeight: FontWeight.bold)),
+                      color: EKodi.themeColor, fontWeight: FontWeight.bold)),
               onPressed: () {},
             )),
         SizedBox(
@@ -430,10 +415,10 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            loading ? "loading...":"Kes $income",
-                            style: TextStyle(
+                            loading ? "loading..." : "Kes $income",
+                            style: const TextStyle(
                                 fontSize: 18.0,
-                                color: EKodi().themeColor,
+                                color: EKodi.themeColor,
                                 fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(
@@ -441,20 +426,20 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
+                            children: const [
+                              Text(
                                 "Money in",
                                 style: TextStyle(
                                     fontSize: 11.0,
                                     color: Colors.grey,
                                     fontWeight: FontWeight.bold),
                               ),
-                              const SizedBox(
+                              SizedBox(
                                 width: 5.0,
                               ),
                               Icon(
                                 Icons.trending_up_rounded,
-                                color: EKodi().themeColor,
+                                color: EKodi.themeColor,
                               ),
                             ],
                           )
@@ -478,7 +463,7 @@ class _RevenueOverviewState extends State<RevenueOverview> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            loading ? "loading...":"Kes $expenses",
+                            loading ? "loading..." : "Kes $expenses",
                             style: const TextStyle(
                                 fontSize: 18.0,
                                 color: Colors.orange,
@@ -535,10 +520,8 @@ class _RevenueOverviewState extends State<RevenueOverview> {
 
     return ScreenTypeLayout.builder(
       mobile: (context) => _buildForMobile(size, startDate, endDate),
-      tablet: (context)=> _buildForDesktop(size, startDate, endDate),
-      desktop: (context)=> _buildForDesktop(size, startDate, endDate),
+      tablet: (context) => _buildForDesktop(size, startDate, endDate),
+      desktop: (context) => _buildForDesktop(size, startDate, endDate),
     );
   }
-
-
 }
